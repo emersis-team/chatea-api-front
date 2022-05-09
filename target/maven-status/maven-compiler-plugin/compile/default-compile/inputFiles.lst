@@ -1,2 +1,13 @@
-D:\Trabajos\CIDESO\chat-ea-web-back\src\main\java\ar\mil\cideso\Chatea.java
-D:\Trabajos\CIDESO\chat-ea-web-back\src\main\java\ar\mil\cideso\PagesController.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Usuario.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\controller\MessageController.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\controller\MensajesController.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\controller\LogoutController.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Message.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\modelo\OutputMessage.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\controller\LoginController.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Mensaje.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\controller\ChatController.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\config\WebSocketConfig.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\Chatea.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\security\WebSecurityConfig.java
+E:\Trabajo\CIDESO\chatea-api-front\src\main\java\ar\mil\cideso\PagesController.java
