@@ -21,9 +21,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,6 +43,9 @@ public class ChatController {
 
 	@Value( "${server.url}" )
 	private String url;
+	
+	@Autowired
+    private SimpMessagingTemplate template;
 	
 	private static final String DIRECTORY = "E:/Trabajo/CIDESO/chat ea/Files";
 	
@@ -67,26 +72,34 @@ public class ChatController {
 	@PostMapping("/v1/messages/textMessage")
 	public ResponseEntity<String> postChat(@RequestHeader("Authorization") String authorization, @ModelAttribute Mensaje entidad) throws ClientProtocolException, IOException {
 		
-		CloseableHttpClient client = HttpClients.createDefault();
-		HttpPost httpPost = new HttpPost(url + "/api/v1/messages/textMessage");
-		
-		httpPost.setHeader("Authorization", authorization);
-		
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-	    params.add(new BasicNameValuePair("message", entidad.getMessage()));
-	    params.add(new BasicNameValuePair("receiver_id", entidad.getReceiver_id().toString()));
-	    httpPost.setEntity(new UrlEncodedFormEntity(params));
-
-	    CloseableHttpResponse response = client.execute(httpPost);
-	    if(response.getStatusLine().getStatusCode() == 200) {
-	    	HttpEntity entity = response.getEntity();
-	    	String responseString = EntityUtils.toString(entity, "UTF-8");
-	    	client.close();
-	    	
-	    	return new ResponseEntity<String>(responseString, HttpStatus.OK);
-	    }else {
-	    	return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
-	    }
+		try {
+			CloseableHttpClient client = HttpClients.createDefault();
+			HttpPost httpPost = new HttpPost(url + "/api/v1/messages/textMessage");
+			
+			httpPost.setHeader("Authorization", authorization);
+			
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("message", entidad.getMessage()));
+			params.add(new BasicNameValuePair("receiver_id", entidad.getReceiver_id().toString()));
+			httpPost.setEntity(new UrlEncodedFormEntity(params));
+			
+			this.template.convertAndSend("/notificacion/mensaje/" + entidad.getReceiver_id(), entidad);
+			
+			CloseableHttpResponse response = client.execute(httpPost);
+			if(response.getStatusLine().getStatusCode() == 200) {
+				HttpEntity entity = response.getEntity();
+				String responseString = EntityUtils.toString(entity, "UTF-8");
+				client.close();
+				
+//				return new ResponseEntity<String>(responseString, HttpStatus.OK);
+			}else {
+//				return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+			}	
+			return new ResponseEntity<String>(HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@PostMapping("/v1/messages/fileMessage")
