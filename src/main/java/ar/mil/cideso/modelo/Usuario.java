@@ -1,6 +1,7 @@
 package ar.mil.cideso.modelo;
 
 public class Usuario {
+	private Long id;
 	private String email;
 	private String password;
 	
@@ -15,5 +16,11 @@ public class Usuario {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	} 
 }

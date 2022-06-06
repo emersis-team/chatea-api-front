@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -31,10 +33,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import ar.mil.cideso.modelo.Member;
 import ar.mil.cideso.modelo.Mensaje;
 
 @Controller
@@ -47,43 +52,30 @@ public class ChatController {
 	@Autowired
     private SimpMessagingTemplate template;
 	
-	private static final String DIRECTORY = "E:/Trabajo/CIDESO/chat ea/Files";
+//	private static final String DIRECTORY = "E:/Trabajo/CIDESO/chat ea/Files";
+	private static final String DIRECTORY = "/home/usuario/files";
 	
-	@GetMapping("/v1/messages/{id}")
-	public ResponseEntity<String> getChat(@RequestHeader("Authorization") String authorization, @PathVariable(value = "id") Long id) throws ClientProtocolException, IOException {
-		
-		CloseableHttpClient client = HttpClients.createDefault();
-		HttpGet httpGet = new HttpGet(url + "/api/v1/messages/" + id);
-		
-		httpGet.setHeader("Authorization", authorization);
-
-	    CloseableHttpResponse response = client.execute(httpGet);
-	    if(response.getStatusLine().getStatusCode() == 200) {
-	    	HttpEntity entity = response.getEntity();
-	    	String responseString = EntityUtils.toString(entity, "UTF-8");
-	    	client.close();
-	    	
-	    	return new ResponseEntity<String>(responseString, HttpStatus.OK);
-	    }else {
-	    	return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
-	    }
-	}
+	
 	
 	@PostMapping("/v1/messages/textMessage")
-	public ResponseEntity<String> postChat(@RequestHeader("Authorization") String authorization, @ModelAttribute Mensaje entidad) throws ClientProtocolException, IOException {
+	public ResponseEntity<Mensaje> postChat(@RequestHeader("Authorization") String authorization, @Valid @RequestBody Mensaje entidad) throws ClientProtocolException, IOException {
 		
 		try {
 			CloseableHttpClient client = HttpClients.createDefault();
-			HttpPost httpPost = new HttpPost(url + "/api/v1/messages/textMessage");
+			HttpPost httpPost = new HttpPost(url + "/api/textMessage");
 			
-			httpPost.setHeader("Authorization", authorization);
+//			httpPost.setHeader("Authorization", authorization);
 			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("user_id", entidad.getUser_id().toString()));
 			params.add(new BasicNameValuePair("message", entidad.getMessage()));
-			params.add(new BasicNameValuePair("receiver_id", entidad.getReceiver_id().toString()));
+			params.add(new BasicNameValuePair("conversation_id", entidad.getConversation_id().toString()));
 			httpPost.setEntity(new UrlEncodedFormEntity(params));
 			
-			this.template.convertAndSend("/notificacion/mensaje/" + entidad.getReceiver_id(), entidad);
+			for(Member m : entidad.getConversation_members()) {
+				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad);				
+			}
+			
 			
 			CloseableHttpResponse response = client.execute(httpPost);
 			if(response.getStatusLine().getStatusCode() == 200) {
@@ -95,10 +87,10 @@ public class ChatController {
 			}else {
 //				return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 			}	
-			return new ResponseEntity<String>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}catch(Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -106,16 +98,18 @@ public class ChatController {
 	public ResponseEntity<String> postAdjunto(@RequestHeader("Authorization") String authorization, @ModelAttribute Mensaje entidad) throws ClientProtocolException, IOException {
 		
 		CloseableHttpClient client = HttpClients.createDefault();
-		HttpPost httpPost = new HttpPost(url + "/api/v1/messages/fileMessage");
+		HttpPost httpPost = new HttpPost(url + "/api/fileMessage");
 		
-		httpPost.setHeader("Authorization", authorization);
+//		httpPost.setHeader("Authorization", authorization);
 			    
 	    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 	    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 	    StringBody message = new StringBody(entidad.getMessage(), ContentType.MULTIPART_FORM_DATA);
-	    StringBody receiver_id = new StringBody(entidad.getReceiver_id().toString(), ContentType.MULTIPART_FORM_DATA);
+	    StringBody conversation_id = new StringBody(entidad.getConversation_id().toString(), ContentType.MULTIPART_FORM_DATA);
+	    StringBody user_id = new StringBody(entidad.getUser_id().toString(), ContentType.MULTIPART_FORM_DATA);
 	    builder.addPart("message", message);
-	    builder.addPart("receiver_id", receiver_id);
+	    builder.addPart("user_id", user_id);
+	    builder.addPart("conversation_id", conversation_id);
 	    for(int i = 0; i < entidad.getFile().length; i++) {
 	    	//CREA UN ARCHIVO
 	    	MultipartFile multipartFile = entidad.getFile()[i];
@@ -140,9 +134,15 @@ public class ChatController {
 	    	String responseString = EntityUtils.toString(entity, "UTF-8");
 	    	client.close();
 	    	
+	    	for(Member m : entidad.getConversation_members()) {
+				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad);				
+			}
+	    	
 	    	return new ResponseEntity<String>(responseString, HttpStatus.OK);
 	    }else {
-	    	return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+	    	entity = response.getEntity();
+	    	String responseString = EntityUtils.toString(entity, "UTF-8");
+	    	return new ResponseEntity<String>(responseString, HttpStatus.BAD_REQUEST);
 	    }
 	}
 }

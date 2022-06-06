@@ -1,24 +1,17 @@
 package ar.mil.cideso.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,33 +20,51 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ar.mil.cideso.modelo.Usuario;
 
 @Controller
-@RequestMapping(value = "/api")
 public class LoginController {
 
 	@Value( "${server.url}" )
 	private String url;
 	
-	@PostMapping("/v1/auth/login")
-	public ResponseEntity<String> login(@Valid @RequestBody Usuario entidad) throws ClientProtocolException, IOException {
+	@PostMapping("/api/v1/auth/login")
+	public ResponseEntity<Usuario> login(@Valid @RequestBody Usuario entidad) throws ClientProtocolException, IOException {
 		
-		CloseableHttpClient client = HttpClients.createDefault();
-	    HttpPost httpPost = new HttpPost(url + "/api/v1/auth/login");
+		Usuario respuesta = new Usuario();
+		respuesta.setEmail(entidad.getEmail());
+		
+		if(entidad.getPassword().equals("password")) {
+			switch(entidad.getEmail()) {
+				case "vale":
+					respuesta.setId(1L);
+					break;
+				case "javi":
+					respuesta.setId(2L);
+					break;
+				case "paul":
+					respuesta.setId(3L);
+					break;
+				case "hernan":
+					respuesta.setId(4L);
+					break;
+				case "gabriel":
+					respuesta.setId(5L);
+					break;
+				case "brian":
+					respuesta.setId(6L);
+					break;
+				case "ramiro":
+					respuesta.setId(7L);
+					break;
+			}			
+		}
 
-	    List<NameValuePair> params = new ArrayList<NameValuePair>();
-	    params.add(new BasicNameValuePair("email", entidad.getEmail()));
-	    params.add(new BasicNameValuePair("password", entidad.getPassword()));
-	    httpPost.setEntity(new UrlEncodedFormEntity(params));
+	    if(respuesta != null && respuesta.getId() != null) {	  
+//	    	Authentication authentication = new UsernamePasswordAuthenticationToken(entidad.getEmail(), entidad.getPassword(),
+//	    				AuthorityUtils.createAuthorityList("Usuario"));
+//        	SecurityContextHolder.getContext().setAuthentication(authentication);
 
-	    CloseableHttpResponse response = client.execute(httpPost);
-
-	    if(response.getStatusLine().getStatusCode() == 200) {
-	    	HttpEntity entity = response.getEntity();
-	    	String responseString = EntityUtils.toString(entity, "UTF-8");
-	    	client.close();
-	    	
-	    	return new ResponseEntity<String>(responseString, HttpStatus.OK);
+	    	return new ResponseEntity<Usuario>(respuesta, HttpStatus.OK);
 	    }else {
-	    	return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+	    	return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
 	    }
 	}
 }

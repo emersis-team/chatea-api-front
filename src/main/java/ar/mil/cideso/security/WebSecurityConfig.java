@@ -38,12 +38,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and()
-        	.headers().frameOptions().sameOrigin()
-        	.and()
-            .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .and().csrf().disable();
+    	http.cors().and()
+    	.headers().frameOptions().sameOrigin()
+    	.and()
+        .authorizeRequests()
+            .antMatchers("/**").permitAll()
+            .and().csrf().disable();
+//        http.cors().and()
+//        	.headers().frameOptions().sameOrigin()
+//        	.and()
+//        	.formLogin().loginPage("/login")
+//        	.and()
+//            .authorizeRequests()
+//            	.antMatchers("/login").permitAll()
+//                .antMatchers("/**").fullyAuthenticated()
+//                .and().csrf().disable();
+//        http
+//        .sessionManagement()
+//            .maximumSessions(1)
+//                .maxSessionsPreventsLogin(true)
+//                .sessionRegistry(sessionRegistry());
     }
     
     @Bean

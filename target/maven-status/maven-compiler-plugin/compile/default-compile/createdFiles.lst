@@ -1,12 +1,13 @@
+ar\mil\cideso\modelo\Member.class
 ar\mil\cideso\modelo\OutputMessage.class
 ar\mil\cideso\security\WebSecurityConfig.class
 ar\mil\cideso\modelo\Usuario.class
-ar\mil\cideso\controller\LogoutController.class
+ar\mil\cideso\controller\ConversationsController.class
 ar\mil\cideso\controller\LoginController.class
-ar\mil\cideso\controller\MensajesController.class
 ar\mil\cideso\controller\ChatController.class
 ar\mil\cideso\Chatea.class
 ar\mil\cideso\modelo\Mensaje.class
 ar\mil\cideso\modelo\Message.class
 ar\mil\cideso\config\WebSocketConfig.class
+ar\mil\cideso\controller\ContactosController.class
 ar\mil\cideso\PagesController.class
