@@ -51,8 +51,11 @@ public class LoginController {
 				case "brian":
 					respuesta.setId(6L);
 					break;
-				case "ramiro":
+				case "ruben":
 					respuesta.setId(7L);
+					break;
+				case "ramiro":
+					respuesta.setId(8L);
 					break;
 			}			
 		}
