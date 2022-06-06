@@ -57,6 +57,11 @@ public class ContactosController {
 		usuario.setEmail("Ramiro");
 		respuesta.add(usuario);
 		
+		usuario = new Usuario();
+		usuario.setId(8L);
+		usuario.setEmail("Rubén");
+		respuesta.add(usuario);
+		
 		return new ResponseEntity<List<Usuario>>(respuesta, HttpStatus.OK);
 	}
 }
