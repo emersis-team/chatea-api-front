@@ -53,12 +53,12 @@ public class ContactosController {
 		respuesta.add(usuario);
 		
 		usuario = new Usuario();
-		usuario.setId(7L);
+		usuario.setId(8L);
 		usuario.setEmail("Ramiro");
 		respuesta.add(usuario);
 		
 		usuario = new Usuario();
-		usuario.setId(8L);
+		usuario.setId(7L);
 		usuario.setEmail("Rubén");
 		respuesta.add(usuario);
 		
