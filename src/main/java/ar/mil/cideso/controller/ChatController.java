@@ -57,7 +57,7 @@ public class ChatController {
 	
 	
 	
-	@PostMapping("/v1/messages/textMessage")
+	@PostMapping("/messages/textMessage")
 	public ResponseEntity<Mensaje> postChat(@RequestHeader("Authorization") String authorization, @Valid @RequestBody Mensaje entidad) throws ClientProtocolException, IOException {
 		
 		try {
@@ -94,7 +94,7 @@ public class ChatController {
 		}
 	}
 	
-	@PostMapping("/v1/messages/fileMessage")
+	@PostMapping("/messages/fileMessage")
 	public ResponseEntity<String> postAdjunto(@RequestHeader("Authorization") String authorization, @ModelAttribute Mensaje entidad) throws ClientProtocolException, IOException {
 		
 		CloseableHttpClient client = HttpClients.createDefault();

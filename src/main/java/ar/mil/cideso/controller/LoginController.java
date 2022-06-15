@@ -25,7 +25,7 @@ public class LoginController {
 	@Value( "${server.url}" )
 	private String url;
 	
-	@PostMapping("/api/v1/auth/login")
+	@PostMapping("/api/auth/login")
 	public ResponseEntity<Usuario> login(@Valid @RequestBody Usuario entidad) throws ClientProtocolException, IOException {
 		
 		Usuario respuesta = new Usuario();
