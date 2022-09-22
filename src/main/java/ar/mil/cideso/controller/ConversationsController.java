@@ -1,6 +1,8 @@
 package ar.mil.cideso.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ar.mil.cideso.config.JwtTokenUtil;
+
 @Controller
 @RequestMapping(value = "/api")
 public class ConversationsController {
@@ -27,12 +31,17 @@ public class ConversationsController {
 	private String url;
 	
 	@GetMapping("/{id}/conversations")
-	public ResponseEntity<String> getConversaciones(@RequestHeader("Authorization") String authorization, @PathVariable(value = "id") Long id) throws ClientProtocolException, IOException {
+	public ResponseEntity<String> getConversaciones( @RequestHeader("Authorization") String authorization, @PathVariable(value = "id") Long id) throws ClientProtocolException, IOException {
 		
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet httpGet = new HttpGet(url + "/api/"+ id +"/conversations");
-		
-//		httpGet.setHeader("Authorization", authorization);
+
+		JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
+
+		System.out.println("******************////////////////////////////   TOKEN    //////////////////////////******************");
+		System.out.println(jwtTokenUtil.generateToken(String.valueOf(id)));
+		System.out.println("******************////////////////////////////   TOKEN    //////////////////////////******************");
+		httpGet.setHeader("Authorization", jwtTokenUtil.generateToken(String.valueOf(id)));
 
 	    CloseableHttpResponse response = client.execute(httpGet);
 	    if(response.getStatusLine().getStatusCode() == 200) {
