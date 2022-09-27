@@ -13,7 +13,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -29,17 +28,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import ar.mil.cideso.modelo.Member;
 import ar.mil.cideso.modelo.Mensaje;
 
 @Controller
@@ -72,23 +67,20 @@ public class ChatController {
 			params.add(new BasicNameValuePair("conversation_id", entidad.getConversation_id().toString()));
 			httpPost.setEntity(new UrlEncodedFormEntity(params));
 			
-			for(Member m : entidad.getConversation_members()) {
-				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad);				
-			}
-			
+
+			entidad.getConversation_members().forEach(m -> 
+				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad)
+			);
 			
 			CloseableHttpResponse response = client.execute(httpPost);
 			if(response.getStatusLine().getStatusCode() == 200) {
 				HttpEntity entity = response.getEntity();
 				String responseString = EntityUtils.toString(entity, "UTF-8");
 				client.close();
-				
-//				return new ResponseEntity<String>(responseString, HttpStatus.OK);
-			}else {
-//				return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
-			}	
+			}
+
 			return new ResponseEntity<>(HttpStatus.OK);
-		}catch(Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -99,50 +91,53 @@ public class ChatController {
 		
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpPost httpPost = new HttpPost(url + "/api/fileMessage");
-		
-//		httpPost.setHeader("Authorization", authorization);
-			    
-	    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-	    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-	    StringBody message = new StringBody(entidad.getMessage(), ContentType.MULTIPART_FORM_DATA);
-	    StringBody conversation_id = new StringBody(entidad.getConversation_id().toString(), ContentType.MULTIPART_FORM_DATA);
-	    StringBody user_id = new StringBody(entidad.getUser_id().toString(), ContentType.MULTIPART_FORM_DATA);
-	    builder.addPart("message", message);
-	    builder.addPart("user_id", user_id);
-	    builder.addPart("conversation_id", conversation_id);
-	    for(int i = 0; i < entidad.getFile().length; i++) {
-	    	//CREA UN ARCHIVO
-	    	MultipartFile multipartFile = entidad.getFile()[i];
-	    	String nombre =  multipartFile.getOriginalFilename().split("\\.")[0] + "-" + String.valueOf(System.currentTimeMillis()).substring(6);
-	    	String extencion = multipartFile.getOriginalFilename().split("\\.")[multipartFile.getOriginalFilename().split("\\.").length-1];
-	    	String directory = DIRECTORY +"/"+ nombre + "." + extencion;
-	    	File destination = new File(directory);
-	    	multipartFile.transferTo(destination);
-	    	
-	    	File m = new File(directory);
-//	    	FileBody fileBody = new FileBody(m, ContentType.DEFAULT_BINARY);
-//	    	builder.addPart("file[" + i + "]", fileBody);	
-	    	builder.addBinaryBody("file[" + i + "]", new FileInputStream(m), ContentType.APPLICATION_OCTET_STREAM, m.getName());
-	    }
-	    HttpEntity entity = builder.build();
-	    //
-	    httpPost.setEntity(entity);
 
-	    CloseableHttpResponse response = client.execute(httpPost);
-	    if(response.getStatusLine().getStatusCode() == 200) {
-	    	entity = response.getEntity();
-	    	String responseString = EntityUtils.toString(entity, "UTF-8");
-	    	client.close();
-	    	
-	    	for(Member m : entidad.getConversation_members()) {
-				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad);				
-			}
-	    	
-	    	return new ResponseEntity<String>(responseString, HttpStatus.OK);
-	    }else {
-	    	entity = response.getEntity();
-	    	String responseString = EntityUtils.toString(entity, "UTF-8");
-	    	return new ResponseEntity<String>(responseString, HttpStatus.BAD_REQUEST);
-	    }
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		StringBody message = new StringBody(entidad.getMessage(), ContentType.MULTIPART_FORM_DATA);
+		StringBody conversation_id = new StringBody(entidad.getConversation_id().toString(), ContentType.MULTIPART_FORM_DATA);
+		StringBody user_id = new StringBody(entidad.getUser_id().toString(), ContentType.MULTIPART_FORM_DATA);
+
+		builder.addPart("message", message);
+		builder.addPart("user_id", user_id);
+		builder.addPart("conversation_id", conversation_id);
+		
+		for(int i = 0; i < entidad.getFile().length; ++i) {
+			MultipartFile newFile = entidad.getFile()[i];
+
+			String[] filenameSplit = newFile.getOriginalFilename().split("\\.");
+
+			String nombre = filenameSplit[0] + "-" + String.valueOf(System.currentTimeMillis()).substring(6);
+			String extencion = filenameSplit[filenameSplit.length-1];
+
+			String directory = DIRECTORY +"/"+ nombre + "." + extencion;
+			File newLocation = new File(directory);
+			File m = new File(directory);
+
+			newFile.transferTo(newLocation);
+			builder.addBinaryBody("file[" + i + "]", new FileInputStream(m), ContentType.APPLICATION_OCTET_STREAM, m.getName());
+		}
+
+		HttpEntity entity = builder.build();
+		httpPost.setEntity(entity);
+
+		CloseableHttpResponse response = client.execute(httpPost);
+
+		if(response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+			entity = response.getEntity();
+			String responseString = EntityUtils.toString(entity, "UTF-8");
+			client.close();
+			
+			entidad.getConversation_members().forEach(m -> 
+				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad)
+			);
+			
+			return new ResponseEntity<String>(responseString, HttpStatus.OK);
+		} else {
+			entity = response.getEntity();
+			String responseString = EntityUtils.toString(entity, "UTF-8");
+			return new ResponseEntity<String>(responseString, HttpStatus.BAD_REQUEST);
+		}
 	}
 }

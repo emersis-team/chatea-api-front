@@ -12,4 +12,5 @@
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/PosicionController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/config/WebSocketConfig.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/LoginController.java
+/home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/servicio/LoginService.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/modelo/OutputMessage.java
