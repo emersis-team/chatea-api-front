@@ -3,6 +3,7 @@
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/PagesController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/ContactosController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/modelo/Member.java
+/home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/Utils/UtilsHttp.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/modelo/Message.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/ConversationsController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/ChatController.java

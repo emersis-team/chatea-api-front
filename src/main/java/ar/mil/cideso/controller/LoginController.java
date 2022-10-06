@@ -1,6 +1,9 @@
 package ar.mil.cideso.controller;
 
 import java.io.IOException;
+import java.util.IllegalFormatException;
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.apache.http.client.ClientProtocolException;
@@ -32,34 +35,35 @@ public class LoginController {
 		Usuario user = new Usuario();
 
 		try {
-			JSONObject userInfo = loginService.getUserInfo(userCredentials);
-			//Long userId = userInfo.getLong("id");
-			user.setId(0L);
-			user.setEmail(userCredentials.getEmail());
+			JSONObject appList = loginService.getAppList(userCredentials);
 
-			JSONArray apps = userInfo.getJSONArray("Aplicaciones");
+			JSONArray apps = appList.getJSONArray("Aplicaciones");
+			Long id = 0L;
+			Optional<JSONObject> userResponse = Optional.empty();
 
 			for (int i=0; i<apps.length(); ++i) {
 				JSONObject app = apps.getJSONObject(i);
 				if(loginService.findChatEAApp(app))
-					return new ResponseEntity<Usuario>(user, HttpStatus.OK);
+					userResponse = loginService.getUser();
 			}
 
-			return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
+			id = userResponse.map(u -> u.getLong("id")).orElse(0L);
 
-		} catch(IllegalStateException e) {
+			if(id == 0L)
+				id = loginService.createUser().orElseThrow(RuntimeException::new);
+
+			user.setId(id);
+			user.setEmail(userCredentials.getEmail());
+
+			return new ResponseEntity<Usuario>(user, HttpStatus.OK);
+		} catch(IllegalFormatException e) {
 			e.printStackTrace();
     	return new ResponseEntity<Usuario>(HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch(JSONException e) {
+		} catch(JSONException|IOException e) {
 			e.printStackTrace();
     	return new ResponseEntity<Usuario>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-////	    if(respuesta != null && respuesta.getId() != null) {	  
-////	    	Authentication authentication = new UsernamePasswordAuthenticationToken(entidad.getEmail(), entidad.getPassword(),
-////	    				AuthorityUtils.createAuthorityList("Usuario"));
-////        	SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//	    	return new ResponseEntity<Usuario>(respuesta, HttpStatus.OK);
+			//return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
 	}
 }
+
