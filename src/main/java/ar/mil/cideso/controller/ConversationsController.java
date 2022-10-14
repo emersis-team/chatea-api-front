@@ -3,6 +3,10 @@ package ar.mil.cideso.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTCreationException;
+
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -31,17 +35,31 @@ public class ConversationsController {
 	private String url;
 	
 	@GetMapping("/{id}/conversations")
-	public ResponseEntity<String> getConversaciones( @RequestHeader("Authorization") String authorization, @PathVariable(value = "id") Long id) throws ClientProtocolException, IOException {
+	public ResponseEntity<String> getConversaciones(/*  @RequestHeader("Authorization") String authorization,  */@PathVariable(value = "id") Long id) throws ClientProtocolException, IOException {
 		
 		CloseableHttpClient client = HttpClients.createDefault();
-		HttpGet httpGet = new HttpGet(url + "/api/"+ id +"/conversations");
+		HttpGet httpGet = new HttpGet(url + "/api/conversations");
 
 		JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
 
+		//String token = "Bearer " + jwtTokenUtil.generateToken(String.valueOf(id));
+
+String token  = "";
+
+		try {
+    Algorithm algorithm = Algorithm.HMAC512("CIDESO");
+	Object payload = {"user_id": id}
+    token = JWT.create()
+        .withIssuer(payload.toString())
+        .sign(algorithm);
+} catch (JWTCreationException exception){
+    //Invalid Signing configuration / Couldn't convert Claims.
+}
+
 		System.out.println("******************////////////////////////////   TOKEN    //////////////////////////******************");
-		System.out.println(jwtTokenUtil.generateToken(String.valueOf(id)));
+		System.out.println(token);
 		System.out.println("******************////////////////////////////   TOKEN    //////////////////////////******************");
-		httpGet.setHeader("Authorization", jwtTokenUtil.generateToken(String.valueOf(id)));
+		httpGet.setHeader("Authorization", token);
 
 	    CloseableHttpResponse response = client.execute(httpGet);
 	    if(response.getStatusLine().getStatusCode() == 200) {
