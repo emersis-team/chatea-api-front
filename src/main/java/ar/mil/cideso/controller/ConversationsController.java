@@ -7,7 +7,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTCreationException;
 
-
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -44,17 +43,19 @@ public class ConversationsController {
 
 		//String token = "Bearer " + jwtTokenUtil.generateToken(String.valueOf(id));
 
-String token  = "";
+		String token  = "";
 
 		try {
-    Algorithm algorithm = Algorithm.HMAC512("CIDESO");
-	Object payload = {"user_id": id}
-    token = JWT.create()
-        .withIssuer(payload.toString())
-        .sign(algorithm);
-} catch (JWTCreationException exception){
+    		Algorithm algorithm = Algorithm.HMAC512("CIDESO");
+			HashMap<String, String> payload = new HashMap<>();
+			payload.put("user_id", id.toString());
+			payload.put("user_name", null);
+    		token = JWT.create()
+        	.withIssuer(payload.toString())
+        	.sign(algorithm);
+		} catch (JWTCreationException exception){
     //Invalid Signing configuration / Couldn't convert Claims.
-}
+		}
 
 		System.out.println("******************////////////////////////////   TOKEN    //////////////////////////******************");
 		System.out.println(token);
