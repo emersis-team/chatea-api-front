@@ -61,8 +61,8 @@ public class ChatController {
 			entidad.getConversation_members().forEach(m -> 
 				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad)
 			);
-			UtilsHttp request = new UtilsHttp();
-			request.httpPostRequest(url + "/api/textMessage", new UrlEncodedFormEntity(params));
+			UtilsHttp request = new UtilsHttp(entidad.getUser_id().toString(), null);
+			request.runPost(url + "/api/textMessage", new UrlEncodedFormEntity(params));
 
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch(Exception e) {
@@ -108,7 +108,7 @@ public class ChatController {
 			HttpEntity entity = builder.build();
 
 			UtilsHttp request = new UtilsHttp();
-			request.httpPostRequest(url + "/api/fileMessage", entity);
+			request.runPost(url + "/api/fileMessage", entity);
 			String responseString = request.getString();
 
 			entidad.getConversation_members().forEach(m -> 

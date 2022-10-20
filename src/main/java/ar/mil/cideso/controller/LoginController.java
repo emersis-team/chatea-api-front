@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,8 +21,6 @@ import ar.mil.cideso.servicio.LoginService;
 @Controller
 public class LoginController {
 
-	@Value( "${server.url}" )
-	private String url;
 	@Autowired
 	LoginService loginService;
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/modelo/Usuario.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/security/WebSecurityConfig.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/PagesController.java
@@ -18,3 +19,20 @@
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/LoginController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/servicio/LoginService.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/modelo/OutputMessage.java
+=======
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Mensaje.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\config\WebSocketConfig.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\Chatea.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Message.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\controller\LoginController.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Usuario.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\controller\ContactosController.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\controller\ChatController.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Posicion.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\controller\ConversationsController.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\security\WebSecurityConfig.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\controller\PosicionController.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\PagesController.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\modelo\Member.java
+C:\Users\javier\Desktop\chatea-api-front\src\main\java\ar\mil\cideso\modelo\OutputMessage.java
+>>>>>>> @{-1}

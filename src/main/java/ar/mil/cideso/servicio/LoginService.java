@@ -22,12 +22,10 @@ public class LoginService {
 
 	@Value( "${server.url}" )
 	private String url;
-
 	@Value( "${server.urlPortal}" )
-	private String urlPortal = "https://cideso.com.ar";
-
+	private String urlPortal;//= "https://cideso.com.ar";
 	@Value( "${server.apikey}" )
-	private String ApiKey = "C1De5o202i";
+	private String ApiKey;// = "C1De5o202i";
 
 	private String CHAT_EA_ID = "4ec9bd54-0e5f-4652-afff-5b57acbde8cc";
 	private String CHAT_EA_NAME = "ChatEA-Web";
@@ -83,7 +81,7 @@ public class LoginService {
 			StringEntity params = new StringEntity(credentials);
 
 			UtilsHttp request = new UtilsHttp();
-			request.httpPostRequest(
+			request.runPost(
 				urlPortal+"/api/ApiCredenciales/APPs",
 				params
 			);
@@ -109,9 +107,11 @@ public class LoginService {
 	}
 
 	private Optional<JSONObject> getUser(Long userId) throws UnsupportedEncodingException, IOException {
-		UtilsHttp request = new UtilsHttp();
+		UtilsHttp request = new UtilsHttp(userId.toString(), null);
 
-		request.httpGetRequest("http://localhost:8000/user/"+userId);
+		request.generateToken();
+		request.runGet(url+"/user");
+
 		JSONObject response = request.getJson();
 
 		return Optional.ofNullable(response);
@@ -121,7 +121,9 @@ public class LoginService {
 		StringEntity params = new StringEntity(payload);
 		UtilsHttp request = new UtilsHttp();
 
-		request.httpPostRequest("/user", params);
+		request.generateToken();
+		request.runPost(url+"/user", params);
+
 		JSONObject response = request.getJson();
 
 		return response.getLong("id");

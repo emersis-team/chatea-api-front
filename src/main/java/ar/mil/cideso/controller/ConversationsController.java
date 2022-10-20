@@ -1,6 +1,11 @@
 package ar.mil.cideso.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTCreationException;
 
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,10 +32,10 @@ public class ConversationsController {
 		@RequestHeader("Authorization") String authorization,
 		@PathVariable(value = "id") Long id
 	) throws ClientProtocolException, IOException {
-
+		
 		UtilsHttp request = new UtilsHttp();
 		try {
-			request.httpGetRequest(
+			request.runGet(
 				url + "/api/"+ id +"/conversations"
 			);
 			String responseString = request.getString();
@@ -55,7 +60,7 @@ public class ConversationsController {
 
 		UtilsHttp request = new UtilsHttp();
 		try {
-			request.httpGetRequest(
+			request.runGet(
 				url + "/api/"+ idUsuario +"/conversations/" + idConversacion + "?page=" + page
 			);
 			String responseString = request.getString();
