@@ -22,14 +22,22 @@ public class UtilsHttp {
 	private int statusCode;
 	private String responseJsonString;
 	private JSONObject responseJson;
-	private String userId;
-	private String userName;
+	private String userId = null;
+	private String userName = null;
 	private String token = "";
 
 	public UtilsHttp() { }
 
 	public UtilsHttp(String userId, String userName) {
 		this.userId = userId;
+		this.userName = userName;
+	}
+
+	public UtilsHttp(Long userId) {
+		this.userId = userId.toString();
+	}
+
+	public UtilsHttp(String userName) {
 		this.userName = userName;
 	}
 
@@ -98,11 +106,6 @@ public class UtilsHttp {
 	}
 
 	public void generateToken() {
-		if(this.userId == null || userId.isEmpty())
-			return;
-		
-		if(this.userName == null || userName.isEmpty())
-			return;
 
 		try {
     	Algorithm algorithm = Algorithm.HMAC512("CIDESO");

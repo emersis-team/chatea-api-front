@@ -30,7 +30,7 @@ public class CompleteController {
 			user.getGrade()
 		);
 
-		Long id = loginService.createUser(parameters);
+		Long id = loginService.createUser(user.getEmail(), parameters);
 		user.setId(id);
 
 		return new ResponseEntity<Usuario>(user, HttpStatus.CREATED);

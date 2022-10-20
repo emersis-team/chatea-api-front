@@ -107,7 +107,7 @@ public class LoginService {
 	}
 
 	private Optional<JSONObject> getUser(Long userId) throws UnsupportedEncodingException, IOException {
-		UtilsHttp request = new UtilsHttp(userId.toString(), null);
+		UtilsHttp request = new UtilsHttp(userId);
 
 		request.generateToken();
 		request.runGet(url+"/user");
@@ -117,9 +117,9 @@ public class LoginService {
 		return Optional.ofNullable(response);
 	}
 
-	public Long createUser(String payload) throws UnsupportedEncodingException, IOException {
+	public Long createUser(String name, String payload) throws UnsupportedEncodingException, IOException {
 		StringEntity params = new StringEntity(payload);
-		UtilsHttp request = new UtilsHttp();
+		UtilsHttp request = new UtilsHttp(name);
 
 		request.generateToken();
 		request.runPost(url+"/user", params);
