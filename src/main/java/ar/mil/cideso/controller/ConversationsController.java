@@ -51,7 +51,9 @@ public class ConversationsController {
 			payload.put("user_id", id.toString());
 			payload.put("user_name", null);
     		token = JWT.create()
-        	.withIssuer(payload.toString())
+        	/* .withIssuer(payload.toString()) */
+			.withClaim("user_id", id)
+			.withNullClaim("user_name")
         	.sign(algorithm);
 		} catch (JWTCreationException exception){
     //Invalid Signing configuration / Couldn't convert Claims.
