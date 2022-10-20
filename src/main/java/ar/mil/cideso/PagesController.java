@@ -18,6 +18,10 @@ public class PagesController {
 	public String video(){
 		return "index";
 	}
+	@GetMapping("/complete")
+	public String complete(){
+		return "index";
+	}
 	@GetMapping("/chat/{id}/{dest}")
 	public String chat(){
 		return "index";

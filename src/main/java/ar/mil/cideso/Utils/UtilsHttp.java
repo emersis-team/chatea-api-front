@@ -1,6 +1,5 @@
 package ar.mil.cideso.Utils;
 
-
 import java.io.IOException;
 
 import org.apache.http.HttpEntity;
@@ -58,7 +57,7 @@ public class UtilsHttp {
 			CloseableHttpClient http = HttpClientBuilder.create().build();
 			HttpPost request = new HttpPost(url);
 
-			//httpPost.setHeader("Authorization", token);
+			//httpPost.setHeader("Authorization", this.generateToken(params));
 			request.addHeader("content-type", "application/json");
 			request.setEntity(params);
 
@@ -76,6 +75,10 @@ public class UtilsHttp {
 			e.printStackTrace();
 			throw new IOException("");
 		}
+	}
+
+	public void generateToken() {
+		return;
 	}
 
 	public int getStatusCode() {

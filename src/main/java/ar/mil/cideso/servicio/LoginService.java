@@ -4,50 +4,95 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ar.mil.cideso.modelo.Usuario;
+import ar.mil.cideso.Exception.NotExistException;
+import ar.mil.cideso.Exception.NotPermissionException;
 import ar.mil.cideso.Utils.UtilsHttp;
 
 @Service
 public class LoginService {
 
+	@Value( "${server.url}" )
+	private String url;
+
+	@Value( "${server.urlPortal}" )
+	private String urlPortal = "https://cideso.com.ar";
+
+	@Value( "${server.apikey}" )
 	private String ApiKey = "C1De5o202i";
+
 	private String CHAT_EA_ID = "4ec9bd54-0e5f-4652-afff-5b57acbde8cc";
 	private String CHAT_EA_NAME = "ChatEA-Web";
-	private CloseableHttpClient http;
+
+	public LoginService() {}
+
+	/*
+	 * Valida un `Usuario` con el estado mayor usando su email y password
+	 * */
+	public Usuario validateUser(Usuario userCredentials) throws IOException, NotExistException, NotPermissionException {
+		Usuario user = new Usuario();
+
+		JSONObject appList = this.getAppList(userCredentials);
+		JSONArray apps = appList.getJSONArray("Aplicaciones");
+
+		Optional<JSONObject> userResponse = Optional.empty();
+		try {
+			for (int i=0; i<apps.length(); ++i) {
+				JSONObject app = apps.getJSONObject(i);
+				if(this.findChatEAApp(app))
+					userResponse = this.getUser(user.getId());
+			}
+		} catch(IOException e) {
+			throw new NotExistException();
+		}
+
+		if(!userResponse.isPresent())
+			throw new NotPermissionException("El usuario no tiene permisos para acceder a chateaWeb");
+
+		user.setId(userResponse.map(u -> u.getLong("id"))
+			.orElseThrow(NotExistException::new)
+		);
+
+		user.setEmail(userCredentials.getEmail());
+
+		user.setName(userResponse.map(u -> u.getString("id"))
+			.orElseThrow(NotExistException::new)
+		);
+
+		return user;
+	}
 
 	/**
-	 * Obtiene la lista de aplicaciones del usuario del portal
+	 * Obtiene la lista de aplicaciones visible por el usuario del portal
 	 */
 	public JSONObject getAppList(Usuario userCredentials) throws IllegalStateException {
 		try {
-			HttpPost request = new HttpPost("http://cideso.com.ar/api/ApiCredenciales/APPs");
+
 			String credentials = String.format(
 				"{\"ApiKey\": \"%s\",\"Usuario\": \"%s\",\"Password\": \"%s\"}",
 				ApiKey,	userCredentials.getEmail(), userCredentials.getPassword()
 			);
 			StringEntity params = new StringEntity(credentials);
 
-			request.addHeader("content-type", "application/json");
-			request.setEntity(params);
+			UtilsHttp request = new UtilsHttp();
+			request.httpPostRequest(
+				urlPortal+"/api/ApiCredenciales/APPs",
+				params
+			);
 
-			CloseableHttpResponse response = this.http.execute(request);
+			JSONObject responseJson = request.getJson();
 
-			String responseJsonString = EntityUtils.toString(response.getEntity());
-			JSONObject responseJson = new JSONObject(responseJsonString);
-
-			if(response.getStatusLine().getStatusCode() != 200)
+			if(request.getStatusCode() != HttpStatus.OK.value())
 				throw new IllegalStateException("Error of credentials");
 
-			this.http.close();
 			return responseJson;
 		} catch(JSONException | IOException e) {
 			e.printStackTrace();
@@ -55,28 +100,31 @@ public class LoginService {
 		}
 	}
 
-	public Optional<JSONObject> getUser() throws UnsupportedEncodingException, IOException {
-		String credentials = String.format("");
-		StringEntity params = new StringEntity(credentials);
+	/**
+	 * Chequea que exista la aplicacion de `ChatEaWeb` en el json
+	 */
+	private boolean findChatEAApp(JSONObject app) {
+		return app.getString("Nombre").equals(CHAT_EA_NAME) &&
+			app.getString("id").equals(CHAT_EA_ID);
+	}
+
+	private Optional<JSONObject> getUser(Long userId) throws UnsupportedEncodingException, IOException {
 		UtilsHttp request = new UtilsHttp();
-		request.httpPostRequest("api", params);
+
+		request.httpGetRequest("http://localhost:8000/user/"+userId);
 		JSONObject response = request.getJson();
 
 		return Optional.ofNullable(response);
 	}
 
-	public Optional<Long> createUser() throws UnsupportedEncodingException, IOException {
-		String credentials = String.format("");
-		StringEntity params = new StringEntity(credentials);
+	public Long createUser(String payload) throws UnsupportedEncodingException, IOException {
+		StringEntity params = new StringEntity(payload);
 		UtilsHttp request = new UtilsHttp();
-		request.httpPostRequest("api", params);
+
+		request.httpPostRequest("/user", params);
 		JSONObject response = request.getJson();
 
-		return Optional.of(response.getLong(""));
-	}
-
-	public boolean findChatEAApp(JSONObject app) {
-		return app.getString("Nombre").equals(CHAT_EA_NAME) && app.getString("id").equals(CHAT_EA_ID);
+		return response.getLong("id");
 	}
 }
 

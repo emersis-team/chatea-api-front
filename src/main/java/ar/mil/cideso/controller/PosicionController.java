@@ -2,6 +2,7 @@ package ar.mil.cideso.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -42,7 +43,7 @@ public class PosicionController {
 	private String url;
 	
 	@Autowired
-    private SimpMessagingTemplate template;
+  private SimpMessagingTemplate template;
 	
 	@PostMapping("/position/user_position")
 	public ResponseEntity<Mensaje> postPosicion(@Valid @RequestBody Posicion entidad) throws ClientProtocolException, IOException {
@@ -81,36 +82,37 @@ public class PosicionController {
 			    }
 			    
 				return new ResponseEntity<>(HttpStatus.OK);
-			}catch(Exception e) {
+			} catch(Exception e) {
 				e.printStackTrace();
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}			
-		}else {
+		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
 	}
 	
 	@GetMapping("/position/{id}/user_contacts_positions")
-	public ResponseEntity<String> getConversaciones(@PathVariable(value = "id") Long id) throws ClientProtocolException, IOException {
+	public ResponseEntity<String> getConversaciones(
+		@PathVariable(value = "id") Long id
+	) throws ClientProtocolException, IOException {
 		
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet httpGet = new HttpGet(url + "/api/position/"+ id +"/user_contacts_positions");
 
-	    CloseableHttpResponse response = client.execute(httpGet);
-	    if(response.getStatusLine().getStatusCode() == 200) {
-	    	try {
-	    		HttpEntity entity = response.getEntity();
-	    		String responseString = EntityUtils.toString(entity, "UTF-8");
-	    		client.close();
-	    		
-	    		return new ResponseEntity<String>(responseString, HttpStatus.OK);	    		
-	    	}catch(Exception e) {
-	    		e.printStackTrace();
-	    		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-	    	}
-	    }else {
-	    	return new ResponseEntity<String>(HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
-	    }
+		CloseableHttpResponse response = client.execute(httpGet);
+		if(response.getStatusLine().getStatusCode() == 200) {
+			try {
+				HttpEntity entity = response.getEntity();
+				String responseString = EntityUtils.toString(entity, "UTF-8");
+				client.close();
+				
+				return new ResponseEntity<String>(responseString, HttpStatus.OK);	    		
+			} catch(Exception e) {
+				e.printStackTrace();
+				return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			return new ResponseEntity<String>(HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+		}
 	}
 }
