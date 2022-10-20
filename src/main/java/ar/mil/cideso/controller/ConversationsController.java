@@ -30,6 +30,8 @@ public class ConversationsController {
 		
 		UtilsHttp request = new UtilsHttp();
 		try {
+
+			request.generateToken();
 			request.runGet(
 				url + "/api/"+ id +"/conversations"
 			);

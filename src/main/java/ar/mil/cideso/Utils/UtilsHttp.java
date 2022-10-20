@@ -109,12 +109,11 @@ public class UtilsHttp {
 
 		try {
     	Algorithm algorithm = Algorithm.HMAC512("CIDESO");
-			HashMap<String, String> payload = new HashMap<>();
-			payload.put("user_id", this.userId);
-			payload.put("user_name", this.userName);
+
     	this.token = "Bearer " + JWT.create()
-        	.withIssuer(payload.toString())
-        	.sign(algorithm);
+				.withClaim("user_id", this.userId)
+				.withClaim("user_name", this.userName)
+				.sign(algorithm);
 		} catch (JWTCreationException e){
 			System.out.println(e);
 		}
