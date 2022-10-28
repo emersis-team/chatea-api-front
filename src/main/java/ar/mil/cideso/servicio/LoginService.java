@@ -6,10 +6,11 @@ import java.util.Optional;
 
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ar.mil.cideso.modelo.Usuario;
@@ -20,6 +21,7 @@ import ar.mil.cideso.Utils.UtilsHttp;
 @Service
 public class LoginService {
 
+	private static final Logger log = LogManager.getLogger(LoginService.class);
 	@Value( "${server.url}" )
 	private String url;
 	@Value( "${server.urlPortal}" )
@@ -35,33 +37,34 @@ public class LoginService {
 	/*
 	 * Valida un `Usuario` con el estado mayor usando su email y password
 	 * */
-	public Usuario validateUser(Usuario userCredentials) throws IOException, NotExistException, NotPermissionException {
+	public Usuario validateUser(Usuario userCredentials) throws NotExistException, NotPermissionException {
 		Usuario user = new Usuario();
 
 		JSONObject appList = this.getAppList(userCredentials);
 		JSONArray apps = appList.getJSONArray("Aplicaciones");
 
 		Optional<JSONObject> userResponse = Optional.empty();
+
 		try {
 			for (int i=0; i<apps.length(); ++i) {
 				JSONObject app = apps.getJSONObject(i);
 				if(this.findChatEAApp(app))
-					userResponse = this.getUser(user.getId());
+					userResponse = this.getUser(userCredentials.getEmail());
 			}
 		} catch(IOException e) {
-			throw new NotExistException();
+			log.error(e.getMessage());
+			throw new NotPermissionException("could not validate the user");
 		}
 
-		if(!userResponse.isPresent())
-			throw new NotPermissionException("El usuario no tiene permisos para acceder a chateaWeb");
-
-		user.setId(userResponse.map(u -> u.getLong("id"))
+		user.setId(
+			userResponse.map(u -> u.getJSONObject("user").getLong("id"))
 			.orElseThrow(NotExistException::new)
 		);
 
 		user.setEmail(userCredentials.getEmail());
 
-		user.setName(userResponse.map(u -> u.getString("id"))
+		user.setName(
+			userResponse.map(u -> u.getJSONObject("user").getString("name"))
 			.orElseThrow(NotExistException::new)
 		);
 
@@ -71,7 +74,7 @@ public class LoginService {
 	/**
 	 * Obtiene la lista de aplicaciones visible por el usuario del portal
 	 */
-	public JSONObject getAppList(Usuario userCredentials) throws IllegalStateException {
+	public JSONObject getAppList(Usuario userCredentials) throws NotPermissionException {
 		try {
 
 			String credentials = String.format(
@@ -87,14 +90,13 @@ public class LoginService {
 			);
 
 			JSONObject responseJson = request.getJson();
-
-			if(request.getStatusCode() != HttpStatus.OK.value())
-				throw new IllegalStateException("Error of credentials");
+			if(responseJson.getString("Result").equals("210"))
+				throw new NotPermissionException("wrong passwrod or user");
 
 			return responseJson;
 		} catch(JSONException | IOException e) {
 			e.printStackTrace();
-			throw new IllegalStateException("cant validate user");
+			throw new NotPermissionException("cant validate user");
 		}
 	}
 
@@ -102,17 +104,17 @@ public class LoginService {
 	 * Chequea que exista la aplicacion de `ChatEaWeb` en el json
 	 */
 	private boolean findChatEAApp(JSONObject app) {
-		return app.getString("Nombre").equals(CHAT_EA_NAME) &&
-			app.getString("id").equals(CHAT_EA_ID);
+		return app.getString("Nombre").equals(CHAT_EA_NAME) && app.getString("id").equals(CHAT_EA_ID);
 	}
 
-	private Optional<JSONObject> getUser(Long userId) throws UnsupportedEncodingException, IOException {
-		UtilsHttp request = new UtilsHttp(userId);
+	private Optional<JSONObject> getUser(String userName) throws UnsupportedEncodingException, IOException {
 
+		JSONObject response = null;
+		UtilsHttp request = new UtilsHttp(userName);
 		request.generateToken();
-		request.runGet(url+"/user");
+		request.runGet(url+"/api/user");
 
-		JSONObject response = request.getJson();
+		response = request.getJson();
 
 		return Optional.ofNullable(response);
 	}
@@ -122,11 +124,11 @@ public class LoginService {
 		UtilsHttp request = new UtilsHttp(name);
 
 		request.generateToken();
-		request.runPost(url+"/user", params);
+		request.runPost(url+"/api/admin/user", params);
 
 		JSONObject response = request.getJson();
 
-		return response.getLong("id");
+		return response.getJSONObject("user").getLong("id");
 	}
 }
 

@@ -24,10 +24,13 @@ public class CompleteController {
 	public ResponseEntity<Usuario> createUser(@Valid @RequestBody Usuario user) throws ClientProtocolException, IOException {
 
 		String parameters = String.format(
-			"{ \"name\": \"%s\", \"surname\": \"%s\", \"grade\": \"%s\" }",
+			"{ \"user_name\": \"%s\", \"name\": \"%s\", \"surname\": \"%s\", \"dni\": \"%s\", \"grade\": \"%s\", \"location_id\": \"%s\"}",
+			user.getEmail(),
 			user.getName(),
 			user.getLastname(),
-			user.getGrade()
+			user.getDni(),
+			user.getGrade(),
+			1
 		);
 
 		Long id = loginService.createUser(user.getEmail(), parameters);

@@ -61,7 +61,7 @@ public class ChatController {
 			entidad.getConversation_members().forEach(m -> 
 				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad)
 			);
-			UtilsHttp request = new UtilsHttp(entidad.getUser_id().toString(), null);
+			UtilsHttp request = new UtilsHttp(entidad.getUser_id(), null);
 			request.runPost(url + "/api/textMessage", new UrlEncodedFormEntity(params));
 
 			return new ResponseEntity<>(HttpStatus.OK);
