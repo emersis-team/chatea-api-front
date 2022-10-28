@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import ar.mil.cideso.context.LocationContext;
 import ar.mil.cideso.modelo.Location;
@@ -39,10 +40,13 @@ public class LocationController {
 		}
 	}
 
-	@GetMapping("api/locations")
-	public ResponseEntity<List<Location>> getLocations(@Valid @RequestBody Usuario u) {
+	@GetMapping("/api/locations/?id={}&username={}")
+	public ResponseEntity<List<Location>> getLocations(
+		@RequestParam("id") String id,
+		@RequestParam("name") String name
+	) {
 		try {
-			List<Location> locations = locationService.getLocations(u.getId(), u.getName());
+			List<Location> locations = locationService.getLocations(Long.valueOf(id), name);
 
 			return new ResponseEntity<List<Location>>(locations, HttpStatus.OK);
 		} catch(IOException e) {
@@ -50,7 +54,7 @@ public class LocationController {
 		}
 	}
 
-	@GetMapping("api/locations/{id}")
+	@GetMapping("/api/locations/{id}")
 	public ResponseEntity<Location> getLocations(
 			@PathVariable(value = "id") Long id,
 			@Valid @RequestBody Usuario u
