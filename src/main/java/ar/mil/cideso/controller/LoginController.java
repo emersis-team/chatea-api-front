@@ -34,10 +34,10 @@ public class LoginController {
 			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
 		} catch(NotPermissionException e) {
 			e.printStackTrace();
-    	return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
 		} catch(JSONException e) {
 			e.printStackTrace();
-    	return new ResponseEntity<Usuario>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Usuario>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

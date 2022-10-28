@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ar.mil.cideso.modelo.Usuario;
@@ -107,16 +108,23 @@ public class LoginService {
 		return app.getString("Nombre").equals(CHAT_EA_NAME) && app.getString("id").equals(CHAT_EA_ID);
 	}
 
-	private Optional<JSONObject> getUser(String userName) throws UnsupportedEncodingException, IOException {
-
-		JSONObject response = null;
+	private Optional<JSONObject> getUser(String userName)
+			throws UnsupportedEncodingException, NotExistException, IOException {
 		UtilsHttp request = new UtilsHttp(userName);
-		request.generateToken();
-		request.runGet(url+"/api/user");
+		JSONObject response = null;
 
-		response = request.getJson();
+		try {
+			request.generateToken();
+			request.runGet(url+"/api/user");
 
-		return Optional.ofNullable(response);
+			response = request.getJson();
+
+			return Optional.ofNullable(response);
+		} catch(IOException e) {
+			if(request.getStatusCode() == HttpStatus.NOT_FOUND.value())
+				throw new NotExistException();
+			throw new IOException();
+		}
 	}
 
 	public Long createUser(String name, String payload) throws UnsupportedEncodingException, IOException {
