@@ -40,7 +40,7 @@ public class LocationController {
 		}
 	}
 
-	@GetMapping("/api/locations/?id={}&username={}")
+	@GetMapping("/api/locations")
 	public ResponseEntity<List<Location>> getLocations(
 		@RequestParam("id") String id,
 		@RequestParam("name") String name

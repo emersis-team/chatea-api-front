@@ -31,13 +31,17 @@ public class AdminService {
 	/*
 	 * Modifico un usuario y lo hago admin
 	 * */
-	public Long createAdmin(Long id, String name, Long userId) {
+	public Long createAdmin(Long id, String name, Long userId) throws IOException, UnsupportedEncodingException {
 		UtilsHttp request = new UtilsHttp(id, name);
 		request.generateToken();
-		request.runPost(this.url+"/api/admin/user/"+userId, "{ admin: 1 }");
+
+		String payload = "{ admin: 1 }";
+		StringEntity params = new StringEntity(payload);
+
+		request.runPost(this.url+"/api/admin/user/"+userId, params);
 		JSONObject response = request.getJson();
 
-		return response.getJsonObject("user").getLong();
+		return response.getJSONObject("user").getLong("id");
 	}
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import ar.mil.cideso.context.LocationContext;
 import ar.mil.cideso.modelo.Location;
 import ar.mil.cideso.modelo.Usuario;
+import ar.mil.cideso.servicio.AdminService;
 import ar.mil.cideso.servicio.LocationService;
 
 @Controller
@@ -25,12 +26,13 @@ public class AdminController {
 	@Autowired
 	AdminService adminService;
 
+	/*
 	@PostMapping("/new-admin/{user_id}")
 	public ResponseEntity<Usuario> createLocation(
-			@Valid @RequestBody Usuario user
-			@PathVariable(value = "user_id") Long id,
+			@Valid @RequestBody Usuario user,
+			@PathVariable(value = "user_id") Long id
 	) {
-		adminService.createAdministrator(user.getId(), user.getEmail(), id);
+		adminService.createAdmin(user.getId(), user.getEmail(), id);
 	}
 
 	@PostMapping("/contactos")
@@ -45,4 +47,5 @@ public class AdminController {
 			) {
 
 	}
+	*/
 }

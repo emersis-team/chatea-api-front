@@ -7,11 +7,13 @@
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/ConversationsController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/ChatController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/modelo/Mensaje.java
+/home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/servicio/AdminService.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/Chatea.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/PosicionController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/LocationController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/config/WebSocketConfig.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/modelo/Location.java
+/home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/AdminController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/CompleteController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/controller/LoginController.java
 /home/percebe/cideso/chatea-api-front/src/main/java/ar/mil/cideso/context/LocationContext.java
