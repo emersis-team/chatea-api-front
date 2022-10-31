@@ -31,7 +31,11 @@ public class LocationController {
 
 		try {
 			Location newLocation = new Location();
-			Long id = locationService.createLocation(l.getLocation().getName(), l.getUsuario().getId(), l.getUsuario().getName());
+			Long id = locationService.createLocation(
+				l.getLocation().getName(),
+				l.getUsuario().getId(),
+				l.getUsuario().getName()
+			);
 			newLocation.setId(id);
 
 			return new ResponseEntity<Location>(newLocation, HttpStatus.OK);
