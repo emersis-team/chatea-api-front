@@ -2,6 +2,8 @@ package ar.mil.cideso.Utils;
 
 import java.io.IOException;
 
+import javax.swing.text.html.parser.Entity;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -57,27 +59,26 @@ public class UtilsHttp {
 
 		if(!this.token.isEmpty())
 			request.setHeader(HttpHeaders.AUTHORIZATION, this.token);
+		else
+			log.warn("No token generated for "+url);
 
 		CloseableHttpResponse response = http.execute(request);
 
 		this.statusCode = response.getStatusLine().getStatusCode();
 
-		for(Header h : request.getAllHeaders())
-			log.error("Headers: "+h.getName()+" "+h.getValue());
+		this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
 
 		if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-			log.error(response.toString());
+			log.error(responseJsonString);
 			throw new IOException("Error call "+url+". status code: " + this.statusCode);
 		}
 
-		this.responseJsonString = "{"+EntityUtils.toString(response.getEntity()).split("\\{", 2)[1];
 
 		try {
 			this.responseJson = new JSONObject(responseJsonString);
 		} catch(JSONException _e) {
 			this.responseArray = new JSONArray(responseJsonString);
 		}
-
 
 		http.close();
 	}
@@ -88,6 +89,8 @@ public class UtilsHttp {
 
 		if(!this.token.isEmpty())
 			request.setHeader(HttpHeaders.AUTHORIZATION, this.token);
+		else
+			log.warn("No token generated for "+url);
 
 		request.addHeader("content-type", "application/json");
 		request.setEntity(params);
@@ -97,11 +100,9 @@ public class UtilsHttp {
 		this.statusCode = response.getStatusLine().getStatusCode();
 
 		if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value())
-			throw new IOException("Error in calling "+url+". status code: " + this.statusCode);
+			throw new IOException("Error calling the server "+url+". status code: " + this.statusCode);
 
-		this.responseJsonString = "{"+EntityUtils.toString(response.getEntity()).split("\\{", 2)[1];
-		this.responseJson = new JSONObject(responseJsonString);
-
+		this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
 		http.close();
 	}
 
@@ -112,6 +113,8 @@ public class UtilsHttp {
 
 			if(!token.isEmpty())
 				request.setHeader(HttpHeaders.AUTHORIZATION, this.token);
+			else
+				log.warn("No token generated for "+url);
 
 			request.addHeader("content-type", "application/json");
 			request.setEntity(params);
@@ -119,11 +122,14 @@ public class UtilsHttp {
 			CloseableHttpResponse response = http.execute(request);
 
 			this.statusCode = response.getStatusLine().getStatusCode();
-			log.error(this.statusCode);
-			if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value())
-				throw new IOException("Error in calling the server. status code: " + this.statusCode);
 
-			this.responseJsonString = "{"+EntityUtils.toString(response.getEntity()).split("\\{", 2)[1];
+			this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
+			if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
+				log.error(responseJsonString+" "+this.token);
+				throw new IOException("Error calling the server "+ url +". status code: " + this.statusCode);
+			}
+
+			this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
 			this.responseJson = new JSONObject(responseJsonString);
 
 			http.close();
@@ -146,6 +152,10 @@ public class UtilsHttp {
 		} catch (JWTCreationException e){
 			System.out.println(e);
 		}
+	}
+
+	private String splitResponseToJson(HttpEntity info) throws IOException {
+		return "{"+EntityUtils.toString(info).split("\\{", 2)[1];
 	}
 
 	public int getStatusCode() {

@@ -54,6 +54,7 @@ public class LocationController {
 
 			return new ResponseEntity<List<Location>>(locations, HttpStatus.OK);
 		} catch(IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<List<Location>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

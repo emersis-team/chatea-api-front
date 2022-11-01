@@ -40,7 +40,21 @@ public class LocationService {
 	public List<Location> getLocations(Long userId, String userName) throws IOException{
 		UtilsHttp request = new UtilsHttp(userId, userName);
 		request.generateToken();
-		request.runGet(this.url+"/api/admin/locations") f
+		request.runGet(this.url+"/api/admin/locations");
+
+		log.error(request.getString());
+		JSONObject response = request.getJson();
+		JSONArray apiLocations = response.getJSONArray("locations");
+
+		List<Location> locations = new ArrayList<>();
+
+		for(int i=0;i<apiLocations.length();++i) {
+			JSONObject a = apiLocations.getJSONObject(i);
+			Location l = new Location();
+			l.setId(a.getLong("id"));
+			l.setName(a.getString("name"));
+			locations.add(l);
+		}
 
 		return locations;
 	}
