@@ -2,17 +2,15 @@ package ar.mil.cideso.Utils;
 
 import java.io.IOException;
 
-import javax.swing.text.html.parser.Entity;
-
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +52,6 @@ public class UtilsHttp {
 	}
 
 	public void runGet(String url) throws IOException {
-		CloseableHttpClient http = HttpClients.createDefault();
 		HttpGet request = new HttpGet(url);
 
 		if(!this.token.isEmpty())
@@ -62,27 +59,24 @@ public class UtilsHttp {
 		else
 			log.warn("No token generated for "+url);
 
-		CloseableHttpResponse response = http.execute(request);
+		this.processRequest(request, url);
+	}
 
-		this.statusCode = response.getStatusLine().getStatusCode();
+	public void runPut(String url, StringEntity params) throws IOException {
+		HttpPut request = new HttpPut(url);
 
-		this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
+		if(!token.isEmpty())
+			request.setHeader(HttpHeaders.AUTHORIZATION, this.token);
+		else
+			log.warn("No token generated for "+url);
 
-		if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-			throw new IOException("Error call "+url+". status code: " + this.statusCode);
-		}
+		request.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+		request.setEntity(params);
 
-		try {
-			this.responseJson = new JSONObject(responseJsonString);
-		} catch(JSONException _e) {
-			this.responseArray = new JSONArray(responseJsonString);
-		}
-
-		http.close();
+		this.processRequest(request, url);
 	}
 
 	public void runPost(String url, HttpEntity params) throws IOException {
-		CloseableHttpClient http = HttpClientBuilder.create().build();
 		HttpPost request = new HttpPost(url);
 
 		if(!this.token.isEmpty())
@@ -90,22 +84,13 @@ public class UtilsHttp {
 		else
 			log.warn("No token generated for "+url);
 
-		request.addHeader("content-type", "application/json");
+		request.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 		request.setEntity(params);
 
-		CloseableHttpResponse response = http.execute(request);
-
-		this.statusCode = response.getStatusLine().getStatusCode();
-
-		if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value())
-			throw new IOException("Error calling the server "+url+". status code: " + this.statusCode);
-
-		this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
-		http.close();
+		this.processRequest(request, url);
 	}
 
 	public void runPost(String url, StringEntity params) throws IOException {
-		CloseableHttpClient http = HttpClientBuilder.create().build();
 		HttpPost request = new HttpPost(url);
 
 		if(!token.isEmpty())
@@ -113,45 +98,57 @@ public class UtilsHttp {
 		else
 			log.warn("No token generated for "+url);
 
-		request.addHeader("content-type", "application/json");
+		request.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 		request.setEntity(params);
 
+		this.processRequest(request, url);
+	}
+
+	/**
+	 * execute some request and save the response and parse to json
+	 * */
+	private void processRequest(HttpUriRequest request, String url) throws IOException {
+		CloseableHttpClient http = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = http.execute(request);
 
 		this.statusCode = response.getStatusLine().getStatusCode();
 
-		if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
+		if(this.statusCode != HttpStatus.OK.value())
 			throw new IOException("Error calling the server "+ url +". status code: " + this.statusCode);
-		}
 
+		/* 
+		 * puede que no todos los request respondan con un json 
+		 * asi que no mando un error si no puedo parsear el request
+		 * TODO: que parseResponseToJson no lance error y parsee siempre el request
+		 * */
 		try {
-			this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
+			this.responseJsonString = this.parseResponseToJson(response.getEntity()); 
+			log.error(responseJsonString); 
 			this.responseJson = new JSONObject(responseJsonString);
 
 			http.close();
 		} catch(JSONException e) {
 			e.printStackTrace();
-			log.error(url+" Exception");
-			throw new IOException("");
+			log.warn("Error parsing response of "+url);
 		}
 	}
 
-	public void generateToken() {
+	private String parseResponseToJson(HttpEntity info) throws IOException {
+		return "{"+EntityUtils.toString(info).split("\\{", 2)[1];
+	}
 
+	public void generateToken() {
 		try {
     	Algorithm algorithm = Algorithm.HMAC512("CIDESO");
 			Builder b = JWT.create();
-				b.withClaim("user_name", this.userName);
-				b.withClaim("user_id", this.userId);
+
+			b.withClaim("user_name", this.userName);
+			b.withClaim("user_id", this.userId);
 
     	this.token = "Bearer " + b.sign(algorithm);
 		} catch (JWTCreationException e){
 			log.error(e);
 		}
-	}
-
-	private String splitResponseToJson(HttpEntity info) throws IOException {
-		return "{"+EntityUtils.toString(info).split("\\{", 2)[1];
 	}
 
 	public int getStatusCode() {

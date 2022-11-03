@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ar.mil.cideso.modelo.Usuario;
+import ar.mil.cideso.Enums.ApiBackUri;
 import ar.mil.cideso.Exception.NotExistException;
 import ar.mil.cideso.Exception.NotPermissionException;
 import ar.mil.cideso.Utils.UtilsHttp;
@@ -115,7 +116,7 @@ public class LoginService {
 
 		try {
 			request.generateToken();
-			request.runGet(url+"/api/user");
+			request.runGet(url+ApiBackUri._user);
 
 			response = request.getJson();
 
@@ -132,7 +133,7 @@ public class LoginService {
 		UtilsHttp request = new UtilsHttp(name);
 
 		request.generateToken();
-		request.runPost(url+"/api/admin/user", params);
+		request.runPost(url+ApiBackUri._userAdmin, params);
 
 		JSONObject response = request.getJson();
 

@@ -1,6 +1,7 @@
 ar/mil/cideso/modelo/Message.class
 ar/mil/cideso/Exception/NotExistException.class
 ar/mil/cideso/modelo/Posicion.class
+ar/mil/cideso/Enums/ApiBackUri.class
 ar/mil/cideso/config/WebSocketConfig.class
 ar/mil/cideso/servicio/AdminService.class
 ar/mil/cideso/controller/CompleteController.class

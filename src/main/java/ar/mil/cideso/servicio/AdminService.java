@@ -28,11 +28,11 @@ public class AdminService {
 		UtilsHttp request = new UtilsHttp(id, name);
 		request.generateToken();
 
-		String payload = "{ admin: 1 }";
+		String payload = "{ \"admin\": 1}";
 		StringEntity params = new StringEntity(payload);
 
-		request.runPost(this.url+"/api/admin/user/"+userId, params);
-		log.error(request.getString());
+		request.runPut(this.url+"/api/admin/user/"+userId, params);
+
 		JSONObject response = request.getJson();
 
 		return response.getJSONObject("user").getLong("id");

@@ -68,3 +68,4 @@ public class LocationController {
 		return new ResponseEntity<Location>(l, HttpStatus.OK);
 	}
 }
+
