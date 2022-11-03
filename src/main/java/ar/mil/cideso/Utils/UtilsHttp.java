@@ -69,10 +69,8 @@ public class UtilsHttp {
 		this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
 
 		if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-			log.error(responseJsonString);
 			throw new IOException("Error call "+url+". status code: " + this.statusCode);
 		}
-
 
 		try {
 			this.responseJson = new JSONObject(responseJsonString);
@@ -107,35 +105,33 @@ public class UtilsHttp {
 	}
 
 	public void runPost(String url, StringEntity params) throws IOException {
+		CloseableHttpClient http = HttpClientBuilder.create().build();
+		HttpPost request = new HttpPost(url);
+
+		if(!token.isEmpty())
+			request.setHeader(HttpHeaders.AUTHORIZATION, this.token);
+		else
+			log.warn("No token generated for "+url);
+
+		request.addHeader("content-type", "application/json");
+		request.setEntity(params);
+
+		CloseableHttpResponse response = http.execute(request);
+
+		this.statusCode = response.getStatusLine().getStatusCode();
+
+		if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
+			throw new IOException("Error calling the server "+ url +". status code: " + this.statusCode);
+		}
+
 		try {
-			CloseableHttpClient http = HttpClientBuilder.create().build();
-			HttpPost request = new HttpPost(url);
-
-			if(!token.isEmpty())
-				request.setHeader(HttpHeaders.AUTHORIZATION, this.token);
-			else
-				log.warn("No token generated for "+url);
-
-			request.addHeader("content-type", "application/json");
-			request.setEntity(params);
-
-			CloseableHttpResponse response = http.execute(request);
-
-			this.statusCode = response.getStatusLine().getStatusCode();
-
-			this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
-			if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-				log.error(responseJsonString+" "+this.token);
-				throw new IOException("Error calling the server "+ url +". status code: " + this.statusCode);
-			}
-
 			this.responseJsonString = this.splitResponseToJson(response.getEntity()); 
 			this.responseJson = new JSONObject(responseJsonString);
 
 			http.close();
-		} catch(IOException e) {
+		} catch(JSONException e) {
 			e.printStackTrace();
-			log.debug(e.getMessage());
+			log.error(url+" Exception");
 			throw new IOException("");
 		}
 	}
@@ -150,7 +146,7 @@ public class UtilsHttp {
 
     	this.token = "Bearer " + b.sign(algorithm);
 		} catch (JWTCreationException e){
-			System.out.println(e);
+			log.error(e);
 		}
 	}
 
