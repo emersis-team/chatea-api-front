@@ -64,13 +64,14 @@ public class LocationService {
 		request.generateToken();
 
 		String credentials = String.format(
-			"\"name\": \"%s\"", name
+			"{ \"name\": \"%s\" }", name
 		);
 		StringEntity params = new StringEntity(credentials);
 		request.runPost(this.url+"/api/admin/locations", params);
+
 		JSONObject response = request.getJson();
 
-		return response.getLong("id");
+		return response.getJSONObject("location").getLong("id");
 	}
 }
 

@@ -29,17 +29,20 @@ public class LocationController {
 	@PostMapping("/locations")
 	public ResponseEntity<Location> createLocation(@Valid @RequestBody LocationContext l) {
 
+		Location newLocation = new Location();
 		try {
-			Location newLocation = new Location();
+			
 			Long id = locationService.createLocation(
 				l.getLocation().getName(),
-				l.getUsuario().getId(),
-				l.getUsuario().getName()
+				l.getUser().getId(),
+				l.getUser().getName()
 			);
 			newLocation.setId(id);
+			newLocation.setName(l.getLocation().getName());
 
 			return new ResponseEntity<Location>(newLocation, HttpStatus.OK);
 		} catch(IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<Location>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

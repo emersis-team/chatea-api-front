@@ -123,10 +123,14 @@ public class UtilsHttp {
 		 * */
 		try {
 			this.responseJsonString = this.parseResponseToJson(response.getEntity()); 
-			log.error(responseJsonString); 
+			log.error(this.responseJsonString);
 			this.responseJson = new JSONObject(responseJsonString);
+			if(responseJson.has("error"))
+				throw new IOException("error que no deberia ser un 200");
 
 			http.close();
+		} catch(ArrayIndexOutOfBoundsException e) {
+			log.error(EntityUtils.toString(response.getEntity()).split("\\{", 2)[0]); 
 		} catch(JSONException e) {
 			e.printStackTrace();
 			log.warn("Error parsing response of "+url);

@@ -4,12 +4,12 @@ import org.json.JSONObject;
 
 public class Location {
 	private Long id;
-	private String nameLocation;
+	private String name;
 
 	public Location() { }
 	public Location(JSONObject res) {
 		this.id = res.getLong("id");
-		this.nameLocation = res.getString("name");
+		this.name = res.getString("name");
 	}
 
 	public void setId(Long id) {
@@ -21,11 +21,11 @@ public class Location {
 	}
 
 	public void setName(String name) {
-		this.nameLocation = name;
+		this.name = name;
 	}
 
 	public String getName() {
-		return this.nameLocation;
+		return this.name;
 	}
 }
 

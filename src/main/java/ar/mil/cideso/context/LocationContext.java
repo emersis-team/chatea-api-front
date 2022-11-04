@@ -4,22 +4,22 @@ import ar.mil.cideso.modelo.Location;
 import ar.mil.cideso.modelo.Usuario;
 
 public class LocationContext {
-	private Location l;
-	private Usuario u;
+	private Location location;
+	private Usuario user;
 
 	public Location getLocation() {
-		return l;
+		return location;
 	}
 
-	public Usuario getUsuario() {
-		return u;
+	public Usuario getUser() {
+		return user;
 	}
 
-	public void setUsuario(Usuario u) {
-		this.u = u;
+	public void setUser(Usuario u) {
+		this.user = u;
 	}
 
 	public void setLocation(Location l) {
-		this.l = l;
+		this.location = l;
 	}
 }
