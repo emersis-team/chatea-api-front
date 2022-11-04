@@ -24,7 +24,7 @@ public class LoginController {
 	@Autowired
 	LoginService loginService;
 
-	@PostMapping("/api/auth/login")
+	@PostMapping("/auth/login")
 	public ResponseEntity<Usuario> login(@Valid @RequestBody Usuario userCredentials) throws ClientProtocolException, IOException {
 		try {
 			Usuario user = loginService.validateUser(userCredentials);

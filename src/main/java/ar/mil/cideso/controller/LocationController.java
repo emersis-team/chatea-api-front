@@ -26,7 +26,7 @@ public class LocationController {
 	@Autowired
 	LocationService locationService;
 
-	@PostMapping("/api/locations")
+	@PostMapping("/locations")
 	public ResponseEntity<Location> createLocation(@Valid @RequestBody LocationContext l) {
 
 		try {
@@ -44,7 +44,7 @@ public class LocationController {
 		}
 	}
 
-	@GetMapping("/api/locations")
+	@GetMapping("/locations")
 	public ResponseEntity<List<Location>> getLocations(
 		@RequestParam("id") String id,
 		@RequestParam("name") String name
@@ -59,7 +59,7 @@ public class LocationController {
 		}
 	}
 
-	@GetMapping("/api/locations/{id}")
+	@GetMapping("/locations/{id}")
 	public ResponseEntity<Location> getLocations(
 			@PathVariable(value = "id") Long id,
 			@Valid @RequestBody Usuario u

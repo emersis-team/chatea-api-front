@@ -20,7 +20,7 @@ public class CompleteController {
 	@Autowired
 	LoginService loginService;
 
-	@PostMapping("/api/completion")
+	@PostMapping("/completion")
 	public ResponseEntity<Usuario> createUser(@Valid @RequestBody Usuario user) throws ClientProtocolException, IOException {
 
 		String parameters = String.format(

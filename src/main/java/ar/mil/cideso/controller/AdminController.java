@@ -1,7 +1,6 @@
 package ar.mil.cideso.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.validation.Valid;
