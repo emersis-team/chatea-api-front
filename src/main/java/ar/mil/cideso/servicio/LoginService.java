@@ -54,21 +54,23 @@ public class LoginService {
 					userResponse = this.getUser(userCredentials.getEmail());
 			}
 		} catch(IOException e) {
-			log.error(e.getMessage());
 			throw new NotPermissionException("could not validate the user");
 		}
+		Long userId = userResponse.map(u -> u.getJSONObject("user").getLong("id"))
+			.orElseThrow(NotExistException::new);
+		String userName = userResponse.map(u -> u.getJSONObject("user").getString("name"))
+			.orElseThrow(NotExistException::new);
 
-		user.setId(
-			userResponse.map(u -> u.getJSONObject("user").getLong("id"))
-			.orElseThrow(NotExistException::new)
-		);
+		UtilsHttp h = new UtilsHttp(userId.toString(), userName);
+		h.generateToken();
 
+		log.error("Id user: "+userId);
+
+		user.setId(userId);
 		user.setEmail(userCredentials.getEmail());
+		user.setName(userName);
 
-		user.setName(
-			userResponse.map(u -> u.getJSONObject("user").getString("name"))
-			.orElseThrow(NotExistException::new)
-		);
+		user.setToken(h.getToken());
 
 		return user;
 	}
@@ -112,13 +114,18 @@ public class LoginService {
 	private Optional<JSONObject> getUser(String userName)
 			throws UnsupportedEncodingException, NotExistException, IOException {
 		UtilsHttp request = new UtilsHttp(userName);
+		request.generateToken();
+
 		JSONObject response = null;
 
 		try {
-			request.generateToken();
 			request.runGet(url+ApiBackUri._user);
 
 			response = request.getJson();
+
+			response
+				.getJSONObject("user")
+				.append("token", request.getToken());
 
 			return Optional.ofNullable(response);
 		} catch(IOException e) {
@@ -128,7 +135,8 @@ public class LoginService {
 		}
 	}
 
-	public Long createUser(String name, String payload) throws UnsupportedEncodingException, IOException {
+	public JSONObject createUser(String name, String payload)
+			throws UnsupportedEncodingException, IOException {
 		StringEntity params = new StringEntity(payload);
 		UtilsHttp request = new UtilsHttp(name);
 
@@ -137,7 +145,7 @@ public class LoginService {
 
 		JSONObject response = request.getJson();
 
-		return response.getJSONObject("user").getLong("id");
+		return response.getJSONObject("user");
 	}
 }
 

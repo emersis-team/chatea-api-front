@@ -38,16 +38,12 @@ public class UtilsHttp {
 
 	public UtilsHttp() { }
 
-	public UtilsHttp(Long userId, String userName) {
-		this.userId = userId.toString();
+	public UtilsHttp(String userName) {
 		this.userName = userName;
 	}
 
-	public UtilsHttp(Long userId) {
-		this.userId = userId.toString();
-	}
-
-	public UtilsHttp(String userName) {
+	public UtilsHttp(String id, String userName) {
+		this.userId = id;
 		this.userName = userName;
 	}
 
@@ -113,8 +109,11 @@ public class UtilsHttp {
 
 		this.statusCode = response.getStatusLine().getStatusCode();
 
-		if(this.statusCode != HttpStatus.OK.value())
+		if(this.statusCode != HttpStatus.OK.value()) {
+			this.responseJsonString = this.parseResponseToJson(response.getEntity()); 
+			//log.error(this.responseJsonString);
 			throw new IOException("Error calling the server "+ url +". status code: " + this.statusCode);
+		}
 
 		/* 
 		 * puede que no todos los request respondan con un json 
@@ -123,7 +122,6 @@ public class UtilsHttp {
 		 * */
 		try {
 			this.responseJsonString = this.parseResponseToJson(response.getEntity()); 
-			log.error(this.responseJsonString);
 			this.responseJson = new JSONObject(responseJsonString);
 			if(responseJson.has("error"))
 				throw new IOException("error que no deberia ser un 200");
@@ -169,6 +167,14 @@ public class UtilsHttp {
 
 	public String getString() {
 		return this.responseJsonString;
+	}
+
+	public String getToken() {
+		return this.token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }
 

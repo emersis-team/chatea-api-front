@@ -7,11 +7,14 @@ ar/mil/cideso/servicio/AdminService.class
 ar/mil/cideso/controller/CompleteController.class
 ar/mil/cideso/Exception/NotPermissionException.class
 ar/mil/cideso/servicio/LocationService.class
+ar/mil/cideso/servicio/UserService.class
+ar/mil/cideso/controller/GroupController.class
 ar/mil/cideso/controller/ChatController.class
 ar/mil/cideso/modelo/Member.class
 ar/mil/cideso/servicio/LoginService.class
 ar/mil/cideso/modelo/Mensaje.class
 ar/mil/cideso/context/LocationContext.class
+ar/mil/cideso/context/ContactContext.class
 ar/mil/cideso/security/WebSecurityConfig.class
 ar/mil/cideso/controller/AdminController.class
 ar/mil/cideso/PagesController.class
@@ -26,3 +29,4 @@ ar/mil/cideso/controller/ConversationsController.class
 ar/mil/cideso/config/JwtTokenUtil.class
 ar/mil/cideso/controller/LocationController.class
 ar/mil/cideso/modelo/Usuario.class
+ar/mil/cideso/modelo/Groups.class

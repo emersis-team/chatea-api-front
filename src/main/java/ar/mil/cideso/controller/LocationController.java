@@ -2,6 +2,7 @@ package ar.mil.cideso.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ar.mil.cideso.context.LocationContext;
@@ -27,18 +29,20 @@ public class LocationController {
 	LocationService locationService;
 
 	@PostMapping("/locations")
-	public ResponseEntity<Location> createLocation(@Valid @RequestBody LocationContext l) {
-
+	public ResponseEntity<Location> createLocation(
+		@Valid @RequestBody Location l,
+		@RequestHeader Map<String, String> headers
+	) {
+		String token = headers.get("authorization");
 		Location newLocation = new Location();
 		try {
 			
 			Long id = locationService.createLocation(
-				l.getLocation().getName(),
-				l.getUser().getId(),
-				l.getUser().getName()
+				l.getName(),
+				token
 			);
 			newLocation.setId(id);
-			newLocation.setName(l.getLocation().getName());
+			newLocation.setName(l.getName());
 
 			return new ResponseEntity<Location>(newLocation, HttpStatus.OK);
 		} catch(IOException e) {
@@ -49,11 +53,11 @@ public class LocationController {
 
 	@GetMapping("/locations")
 	public ResponseEntity<List<Location>> getLocations(
-		@RequestParam("id") String id,
-		@RequestParam("name") String name
+		@RequestHeader Map<String, String> headers
 	) {
+		String token = headers.get("authorization");
 		try {
-			List<Location> locations = locationService.getLocations(Long.valueOf(id), name);
+			List<Location> locations = locationService.getLocations(token);
 
 			return new ResponseEntity<List<Location>>(locations, HttpStatus.OK);
 		} catch(IOException e) {
@@ -63,11 +67,13 @@ public class LocationController {
 	}
 
 	@GetMapping("/locations/{id}")
-	public ResponseEntity<Location> getLocations(
+	public ResponseEntity<Location> getLocation(
 			@PathVariable(value = "id") Long id,
-			@Valid @RequestBody Usuario u
+			@Valid @RequestBody Usuario u,
+		@RequestHeader Map<String, String> headers
 	) throws IOException { 
-		Location l = locationService.findLocation(id, u.getId(), u.getName());
+		String token = headers.get("authorization");
+		Location l = locationService.findLocation(id, token);
 		return new ResponseEntity<Location>(l, HttpStatus.OK);
 	}
 }

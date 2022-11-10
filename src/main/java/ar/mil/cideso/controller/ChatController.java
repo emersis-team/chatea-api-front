@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -46,10 +47,11 @@ public class ChatController {
 
 	@PostMapping("/messages/textMessage")
 	public ResponseEntity<Mensaje> postChat(
-		@RequestHeader("Authorization") String authorization,
-		@Valid @RequestBody Mensaje entidad
+		@Valid @RequestBody Mensaje entidad,
+		@RequestHeader Map<String, String> headers
 	) throws ClientProtocolException, IOException {
 		try {
+			String token = headers.get("Authentication");
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("user_id", entidad.getUser_id().toString()));
@@ -59,7 +61,8 @@ public class ChatController {
 			entidad.getConversation_members().forEach(m -> 
 				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad)
 			);
-			UtilsHttp request = new UtilsHttp(entidad.getUser_id(), null);
+			UtilsHttp request = new UtilsHttp();
+			request.setToken(token);
 			request.runPost(url + "/api/textMessage", new UrlEncodedFormEntity(params));
 
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -71,11 +74,12 @@ public class ChatController {
 	
 	@PostMapping("/messages/fileMessage")
 	public ResponseEntity<String> postAdjunto(
-		@RequestHeader("Authorization") String authorization,
-		@ModelAttribute Mensaje entidad
+		@ModelAttribute Mensaje entidad,
+		@RequestHeader Map<String, String> headers
 	) throws ClientProtocolException, IOException {
 		try {
 
+			String token = headers.get("Authentication");
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 			builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
@@ -106,6 +110,7 @@ public class ChatController {
 			HttpEntity entity = builder.build();
 
 			UtilsHttp request = new UtilsHttp();
+			request.setToken(token);
 			request.runPost(url + "/api/fileMessage", entity);
 			String responseString = request.getString();
 

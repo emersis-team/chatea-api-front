@@ -1,15 +1,29 @@
 package ar.mil.cideso.modelo;
 
+import org.json.JSONObject;
+
 public class Usuario {
 	private Long id;
 	private String name;
 	private String lastname;
-	private Long dni;
+	private String dni;
 	private String email;
 	private String grade;
 	private String organization;
 	private String password;
+	private String token;
 	
+	public Usuario() {}
+	public Usuario(JSONObject usuario) {
+		this.id = usuario.getLong("id");
+		this.name = usuario.getString("name");
+		this.lastname = usuario.get("surname").toString();
+		this.dni = usuario.get("dni").toString();
+		this.email = usuario.get("user_name").toString();
+		this.grade = usuario.get("grade").toString();
+		this.organization = usuario.get("location_id").toString();
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -58,11 +72,11 @@ public class Usuario {
 		this.name = name;
 	} 
 
-	public Long getDni() {
+	public String getDni() {
 		return dni;
 	}
 
-	public void setDni(Long dni) {
+	public void setDni(String dni) {
 		this.dni = dni;
 	} 
 
@@ -73,5 +87,13 @@ public class Usuario {
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	} 
+
+	public String getToken() {
+		return this.token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 }
 

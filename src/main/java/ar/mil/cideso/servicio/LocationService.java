@@ -26,20 +26,23 @@ public class LocationService {
 
 	public LocationService() {}
 
-	public Location findLocation(Long id, Long userId, String userName) throws IOException{
-		UtilsHttp request = new UtilsHttp(userId, userName);
-		request.generateToken();
+	public Location findLocation(Long id, String token) throws IOException{
+		UtilsHttp request = new UtilsHttp();
+		request.setToken(token);
+
 		request.runGet(this.url+"/api/admin/locations/"+id);
+
 		log.error(request.getString());
 		JSONObject response = request.getJson();
+
 		Location l = new Location(response);
 
 		return l;
 	}
 
-	public List<Location> getLocations(Long userId, String userName) throws IOException{
-		UtilsHttp request = new UtilsHttp(userId, userName);
-		request.generateToken();
+	public List<Location> getLocations(String token) throws IOException{
+		UtilsHttp request = new UtilsHttp();
+		request.setToken(token);
 		request.runGet(this.url+"/api/admin/locations");
 
 		log.error(request.getString());
@@ -49,19 +52,17 @@ public class LocationService {
 		List<Location> locations = new ArrayList<>();
 
 		for(int i=0;i<apiLocations.length();++i) {
-			JSONObject a = apiLocations.getJSONObject(i);
-			Location l = new Location();
-			l.setId(a.getLong("id"));
-			l.setName(a.getString("name"));
+			JSONObject apiLocation = apiLocations.getJSONObject(i);
+			Location l = new Location(apiLocation);
 			locations.add(l);
 		}
 
 		return locations;
 	}
 
-	public Long createLocation(String name, Long userId, String userName) throws UnsupportedEncodingException, IOException {
-		UtilsHttp request = new UtilsHttp(userId, userName);
-		request.generateToken();
+	public Long createLocation(String name, String token) throws UnsupportedEncodingException, IOException {
+		UtilsHttp request = new UtilsHttp();
+		request.setToken(token);
 
 		String credentials = String.format(
 			"{ \"name\": \"%s\" }", name
