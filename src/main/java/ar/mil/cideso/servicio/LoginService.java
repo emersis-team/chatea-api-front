@@ -70,6 +70,16 @@ public class LoginService {
 		user.setEmail(userCredentials.getEmail());
 		user.setName(userName);
 
+		user.setIsAdmin(
+			Boolean.valueOf(
+				userResponse.map(j -> j.getJSONObject("user"))
+				.map(u -> u.getInt("admin"))
+				.orElseThrow(NotExistException::new).toString()
+			)
+		);
+
+
+		log.error("token seteado y a usar: "+ h.getToken());
 		user.setToken(h.getToken());
 
 		return user;

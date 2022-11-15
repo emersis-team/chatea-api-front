@@ -7,15 +7,11 @@ public class ContactContext {
 	private List<String> groups;
 
 	public String getContacts() {
-		return this.contacts
-			.stream()
-			.reduce("", (first, second) -> "\""+first+"\", \""+second+"\"");
+		return this.contacts.toString();
 	}
 
 	public String getGroups() {
-		return this.groups
-			.stream()
-			.reduce("", (first, second) -> "\""+first+"\", \""+second+"\"");
+		return this.groups.toString();
 	}
 
 	public void setContacts(List<String> contacts) {

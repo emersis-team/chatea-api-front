@@ -12,6 +12,7 @@ public class Usuario {
 	private String organization;
 	private String password;
 	private String token;
+	private Boolean isAdmin;
 	
 	public Usuario() {}
 	public Usuario(JSONObject usuario) {
@@ -94,6 +95,14 @@ public class Usuario {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public Boolean getIsAdmin() {
+		return this.isAdmin;
+	}
+
+	public void setIsAdmin(Boolean admin) {
+		this.isAdmin = admin;
 	}
 }
 

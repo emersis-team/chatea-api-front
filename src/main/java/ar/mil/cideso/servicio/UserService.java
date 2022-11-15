@@ -36,14 +36,35 @@ public class UserService {
 	}
 
 	public List<Usuario> getUsers(String token) throws IOException {
-		log.error("Token del cliente: "+token);
 		UtilsHttp request = new UtilsHttp();
 		request.setToken(token);
 
 		request.runGet(this.url+"/api/admin/users");
 
 		JSONObject response = request.getJson();
-		log.error(response.keySet().toString());
+
+		JSONArray apiUsers = response.getJSONArray("users");
+
+		List<Usuario> usuarios = new ArrayList<>();
+
+		for(int i=0;i<apiUsers.length();++i) {
+			JSONObject apiGroups = apiUsers.getJSONObject(i);
+			Usuario u = new Usuario(apiGroups);
+
+			usuarios.add(u);
+		}
+
+		return usuarios;
+	}
+
+	public List<Usuario> getContacts(Long userId, String token) throws IOException {
+		UtilsHttp request = new UtilsHttp();
+		request.setToken(token);
+
+		request.runGet(this.url+"");
+
+		JSONObject response = request.getJson();
+
 		JSONArray apiUsers = response.getJSONArray("users");
 
 		List<Usuario> usuarios = new ArrayList<>();
@@ -62,7 +83,7 @@ public class UserService {
 		UtilsHttp request = new UtilsHttp();
 		request.setToken(token);
 
-		request.runPut(this.url+"/api/users/"+userId, params);
+		request.runPut(this.url+"/api/admin/user/"+userId, params);
 
 		JSONObject response = request.getJson();
 		return response.getJSONObject("user").getLong("id");

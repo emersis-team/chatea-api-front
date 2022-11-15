@@ -82,7 +82,7 @@ public class AdminService {
 
 	public Groups findGroup(Long groupId, String token) throws IOException {
 		UtilsHttp request = new UtilsHttp(token);
-		request.generateToken();
+
 		request.runGet(this.url+"/api/admin/groups/"+groupId);
 
 		JSONObject response = request.getJson();

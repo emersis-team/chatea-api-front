@@ -38,12 +38,4 @@ public class AdminController {
 			return new ResponseEntity<Usuario>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-	@GetMapping("/contactos/{user_id}")
-	public ResponseEntity<List<Usuario>> getLocations(
-			@PathVariable(value = "user_id") Long id,
-			@RequestHeader Map<String, String> headers
-	) {
-		return new ResponseEntity<List<Usuario>>(HttpStatus.OK);
-	}
 }

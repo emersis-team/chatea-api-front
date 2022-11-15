@@ -1,7 +1,6 @@
 package ar.mil.cideso.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,14 +40,25 @@ public class ContactosController {
 		String groupFormated = contacts.getGroups();
 
 		String credentials = String.format(
-			"{ \"contacts\": [%s], \"groups\": [%s] }",
+			"{ \"contacts\": %s, \"groups\": %s }",
 			contactFormated, groupFormated
 		);
+
 		StringEntity params = new StringEntity(credentials);
 
 		userService.createContacts(id, token, params);
 		return new ResponseEntity<String>("", HttpStatus.OK);
 	}
+
+	@GetMapping("/contactos/{user_id}")
+	public ResponseEntity<String> getContacts(
+		@PathVariable(value = "user_id") Long id,
+		@RequestHeader Map<String, String> headers
+		) throws IOException{ 
+			String token = headers.get("authorization");
+			userService.getContacts(id, token);
+			return new ResponseEntity<String>("", HttpStatus.OK);
+		}
 
 	@GetMapping("/usuarios")
 	public ResponseEntity<List<Usuario>> getUsuarios(

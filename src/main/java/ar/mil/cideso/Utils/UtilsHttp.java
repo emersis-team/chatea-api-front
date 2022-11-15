@@ -111,7 +111,7 @@ public class UtilsHttp {
 
 		if(this.statusCode != HttpStatus.OK.value()) {
 			this.responseJsonString = this.parseResponseToJson(response.getEntity()); 
-			//log.error(this.responseJsonString);
+			log.error(this.responseJsonString);
 			throw new IOException("Error calling the server "+ url +". status code: " + this.statusCode);
 		}
 

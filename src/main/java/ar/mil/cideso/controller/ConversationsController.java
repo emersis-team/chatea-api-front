@@ -20,18 +20,17 @@ public class ConversationsController {
 	@Value( "${server.url}" )
 	private String url;
 	
-	@GetMapping("/{id}/conversations")
+	@GetMapping("/conversations")
 	public ResponseEntity<String> getConversaciones(
-		@RequestHeader("Authorization") String authorization,
-		@PathVariable(value = "id") Long id
+		@RequestHeader("authorization") String authorization
 	) throws ClientProtocolException, IOException {
 		
 		UtilsHttp request = new UtilsHttp();
 		try {
 
-			request.generateToken();
+			request.setToken(authorization);
 			request.runGet(
-				url + "/api/"+ id +"/conversations"
+				url + "/api/conversations"
 			);
 			String responseString = request.getString();
 
@@ -47,13 +46,13 @@ public class ConversationsController {
 	
 	@GetMapping("/{idUsuario}/conversations/{idConversacion}")
 	public ResponseEntity<String> getChat(
-		@RequestHeader("Authorization") String authorization,
+		@RequestHeader("authorization") String authorization,
 		@PathVariable(value = "idUsuario") Long idUsuario,
 		@PathVariable(value = "idConversacion") Long idConversacion,
 		@RequestParam String page
 	) throws ClientProtocolException, IOException {
 
-		UtilsHttp request = new UtilsHttp();
+		UtilsHttp request = new UtilsHttp(authorization);
 		try {
 			request.runGet(
 				url + "/api/"+ idUsuario +"/conversations/" + idConversacion + "?page=" + page
