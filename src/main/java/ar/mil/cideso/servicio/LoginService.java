@@ -42,17 +42,10 @@ public class LoginService {
 	public Usuario validateUser(Usuario userCredentials) throws NotExistException, NotPermissionException {
 		Usuario user = new Usuario();
 
-		JSONObject appList = this.getAppList(userCredentials);
-		JSONArray apps = appList.getJSONArray("Aplicaciones");
-
 		Optional<JSONObject> userResponse = Optional.empty();
 
 		try {
-			for (int i=0; i<apps.length(); ++i) {
-				JSONObject app = apps.getJSONObject(i);
-				if(this.findChatEAApp(app))
-					userResponse = this.getUser(userCredentials.getEmail());
-			}
+			userResponse = this.getUser(userCredentials.getEmail());
 		} catch(IOException e) {
 			throw new NotPermissionException("could not validate the user");
 		}
@@ -78,8 +71,6 @@ public class LoginService {
 			)
 		);
 
-
-		log.error("token seteado y a usar: "+ h.getToken());
 		user.setToken(h.getToken());
 
 		return user;
