@@ -27,16 +27,37 @@ validar contra `el Portal`/`el estado mayor` al momento de loguear un usuario.
 - npm 8.15.0
 - java 8
 
+Creamos la carpeta `cideso`.
+(`repo Middleware`)[https://github.com/emersis-team/chatea-api-front]
+(`repo Api`)[https://github.com/emersis-team/api-chat]
+(`repo Vuejs`)[https://github.com/emersis-team/chat-ea-web-proyecto]
+(`repo Mediasoup`)[https://github.com/emersis-team/ws-video-room]
+
+Se necesitan 4 servers, uno para la `api`, otro para el `middleware`, otro para `vuejs`
+y otro para `mediasoup`.
+
 Corriendo `npm install` en el server de vue js instalara las dependencias de vuejs.
 Para windows puede tener problemas para una libreria: (`Mediasoup`)[https://mediasoup.org/documentation/v3/mediasoup/installation/],
-la cual tiene su guia de instalacion y de problemas. 
+la cual tiene su guia de instalacion y de solucion de problemas. 
 
-Para correr el server de video se necesitara otra aplicacion en nodejs. Para
-instalarla se necesita correr `npm install --legacy-peer-deps` y `tsc && npm run start`
-o `npx tsc && npm run start`. Tambien se necesitara abrir un los puertos `10000` al `10100`
-en el server para que la aplicacion de video puede escuchar a los clientes en
-esos puertos.
+Para correr el server de video/`mediasoup` con nodejs. Para instalar las dependencias
+se necesita correr `npm install --legacy-peer-deps` y `tsc && npm run start`
+o `npx tsc && npm run start` para levantar la aplicacion.
+Tambien se necesitara abrir un los puertos `10000` al `10100` en el server para que la
+aplicacion de video puede escuchar a los clientes en esos puertos.
 
-Para la aplicacion de php y de java se necesita configurar un server xampp con
-php y con tomcat para java subiendo el archivo war de la aplicacion.
+Para la aplicacion de php/`api` y de java/`middleware` configurar un server xampp con
+php y con tomcat, para java se necesita subir el archivo war de la aplicacion, en la
+carpeta webapps de xampp.
+
+En la aplicacion de `vuejs` instalamos las dependencias con `npm install`,
+compilamos y levantamos la aplicacion con `tsc && npm run start` o `npx tsc &&
+npm run start`. Para levantarla en un servidor aparte se tiene que usar `tsc && npm run
+build` o `npx tsc && npm run build` para crear los archivos estaticos en la
+carpeta `/dist`, sirviendo esta carpeta y redirigiendo las peticiones al
+`index.html` se puede usar en un server aparte.
+
+Para servir la aplicacion de `vuejs` desde el `middleware` se puede copiar el
+contenido de la carpeta `/dist` de vue a `src/main/resources/static` del middleware,
+y el archivo `/dist/index.html` reemplazarlo en `/src/main/resources/templates/`.
 
