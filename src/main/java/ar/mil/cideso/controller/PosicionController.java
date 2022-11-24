@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -43,7 +41,7 @@ public class PosicionController {
   private SimpMessagingTemplate template;
 	
 	@PostMapping("/position/user_position")
-	public ResponseEntity<Mensaje> postPosicion(@Valid @RequestBody Posicion entidad) throws ClientProtocolException, IOException {
+	public ResponseEntity<Mensaje> postPosicion(@RequestBody Posicion entidad) throws ClientProtocolException, IOException {
 		
 		if(entidad.getUser_id() != null) {
 			try {

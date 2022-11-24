@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,7 @@ public class ContactosController {
 	@PutMapping("/nuevosContactos/{user_id}")
 	public ResponseEntity<String> addContacts(
 		@PathVariable(value = "user_id") Long id,
-		@Valid @RequestBody ContactContext contacts,
+		@RequestBody ContactContext contacts,
 		@RequestHeader Map<String, String> headers
 	) throws ClientProtocolException, IOException {
 		String token = headers.get("authorization");

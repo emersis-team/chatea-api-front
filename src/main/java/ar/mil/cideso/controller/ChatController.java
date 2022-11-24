@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -47,7 +45,7 @@ public class ChatController {
 
 	@PostMapping("/messages/textMessage")
 	public ResponseEntity<Mensaje> postChat(
-		@Valid @RequestBody Mensaje entidad,
+		@RequestBody Mensaje entidad,
 		@RequestHeader Map<String, String> headers
 	) throws ClientProtocolException, IOException {
 		try {

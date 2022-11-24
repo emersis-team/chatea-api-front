@@ -2,8 +2,6 @@ package ar.mil.cideso.controller;
 
 import java.io.IOException;
 
-import javax.validation.Valid;
-
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class LoginController {
 	LoginService loginService;
 
 	@PostMapping("/auth/login")
-	public ResponseEntity<Usuario> login(@Valid @RequestBody Usuario userCredentials) throws ClientProtocolException, IOException {
+	public ResponseEntity<Usuario> login(@RequestBody Usuario userCredentials) throws ClientProtocolException, IOException {
 		try {
 			Usuario user = loginService.validateUser(userCredentials);
 

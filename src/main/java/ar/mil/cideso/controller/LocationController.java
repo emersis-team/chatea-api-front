@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +28,7 @@ public class LocationController {
 
 	@PostMapping("/locations")
 	public ResponseEntity<Location> createLocation(
-		@Valid @RequestBody Location l,
+		@RequestBody Location l,
 		@RequestHeader Map<String, String> headers
 	) {
 		String token = headers.get("authorization");
@@ -69,7 +67,7 @@ public class LocationController {
 	@GetMapping("/locations/{id}")
 	public ResponseEntity<Location> getLocation(
 			@PathVariable(value = "id") Long id,
-			@Valid @RequestBody Usuario u,
+			@RequestBody Usuario u,
 		@RequestHeader Map<String, String> headers
 	) throws IOException { 
 		String token = headers.get("authorization");

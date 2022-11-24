@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 @Controller
 public class GroupController {
 
@@ -54,7 +52,7 @@ public class GroupController {
 
 	@PostMapping("/group")
 	public ResponseEntity<Groups> createLocation(
-			@Valid @RequestBody Groups group,
+			@RequestBody Groups group,
 			@RequestHeader Map<String, String> headers
 	) {
 		try {

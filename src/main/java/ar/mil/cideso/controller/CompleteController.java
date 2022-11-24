@@ -3,8 +3,6 @@ package ar.mil.cideso.controller;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ public class CompleteController {
 
 	@PostMapping("/completion")
 	public ResponseEntity<Usuario> createUser(
-		@Valid @RequestBody Usuario user
+		@RequestBody Usuario user
 	) throws ClientProtocolException, IOException {
 
 		String parameters = String.format(
