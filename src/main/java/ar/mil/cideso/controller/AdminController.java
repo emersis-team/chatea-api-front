@@ -23,12 +23,12 @@ public class AdminController {
 	AdminService adminService;
 
 	@PostMapping("/new-admin/{user_id}")
-	public ResponseEntity<Usuario> createLocation(
+	public ResponseEntity<Usuario> createAdmin(
 			@PathVariable(value = "user_id") Long id,
 			@RequestHeader Map<String, String> headers
 	) {
 		try {
-			String token = headers.get("Authorization");
+			String token = headers.get("authorization");
 			adminService.createAdmin(id, token);
 
 			return new ResponseEntity<Usuario>(HttpStatus.OK);
@@ -36,4 +36,20 @@ public class AdminController {
 			return new ResponseEntity<Usuario>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@GetMapping("/user/{user_id}")
+	public ResponseEntity<Usuario> getUser(
+			@PathVariable(value = "user_id") Long id,
+			@RequestHeader Map<String, String> headers
+	) {
+		try {
+			String token = headers.get("authorization");
+			Usuario u = adminService.getUser(id, token);
+
+			return new ResponseEntity<Usuario>(u, HttpStatus.OK);
+		} catch(IOException e) {
+			return new ResponseEntity<Usuario>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }

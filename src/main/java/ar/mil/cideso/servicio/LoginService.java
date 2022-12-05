@@ -64,11 +64,9 @@ public class LoginService {
 		user.setName(userName);
 
 		user.setIsAdmin(
-			Boolean.valueOf(
 				userResponse.map(j -> j.getJSONObject("user"))
 				.map(u -> u.getInt("admin"))
-				.orElseThrow(NotExistException::new).toString()
-			)
+				.orElseThrow(NotExistException::new).equals(1)
 		);
 
 		user.setToken(h.getToken());
@@ -128,6 +126,7 @@ public class LoginService {
 				.getJSONObject("user")
 				.append("token", request.getToken());
 
+			log.error(request.getString());
 			return Optional.ofNullable(response);
 		} catch(IOException e) {
 			if(request.getStatusCode() == HttpStatus.NOT_FOUND.value())

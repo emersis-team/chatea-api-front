@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import ar.mil.cideso.Utils.UtilsHttp;
 import ar.mil.cideso.modelo.Groups;
+import ar.mil.cideso.modelo.Usuario;
 
 @Service
 public class AdminService {
@@ -39,6 +40,17 @@ public class AdminService {
 		JSONObject response = request.getJson();
 
 		return response.getJSONObject("user").getLong("id");
+	}
+
+	public Usuario getUser(Long userId, String token) throws IOException, UnsupportedEncodingException {
+		UtilsHttp request = new UtilsHttp();
+		request.setToken(token);
+
+		request.runGet(this.url+"/api/admin/user/"+userId);
+		JSONObject response = request.getJson();
+		log.error(response.toString());
+
+		return new Usuario(response);
 	}
 
 	public Long createGroup(String name, String token) throws IOException {
@@ -67,13 +79,13 @@ public class AdminService {
 
 		log.error(request.getString());
 		JSONObject response = request.getJson();
-		JSONArray apiLocations = response.getJSONArray("groups");
+		JSONArray apiGroups = response.getJSONArray("groups");
 
 		List<Groups> groups = new ArrayList<>();
 
-		for(int i=0;i<apiLocations.length();++i) {
-			JSONObject apiGroups = apiLocations.getJSONObject(i);
-			Groups g = new Groups(apiGroups);
+		for(int i=0;i<apiGroups.length();++i) {
+			JSONObject apiGroup = apiGroups.getJSONObject(i);
+			Groups g = new Groups(apiGroup);
 			groups.add(g);
 		}
 

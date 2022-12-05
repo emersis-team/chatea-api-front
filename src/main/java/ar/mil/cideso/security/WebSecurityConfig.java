@@ -14,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 @EnableWebSecurity
@@ -29,21 +32,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		return bCryptPasswordEncoder;
 	}
-	
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/img/**", "/plugins/**",
-				"/fonts/**");
-	}
-	
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	http.cors().and()
-    	.headers().frameOptions().sameOrigin()
-    	.and()
-        .authorizeRequests()
-            .antMatchers("/**").permitAll()
-            .and().csrf().disable();
+				http.cors()
+            .and()
+            .requestMatchers()
+            .antMatchers("/*")
+            .and()
+            .logout()
+            .permitAll()
+						.and()
+            .authorizeRequests()
+						.anyRequest()
+            .authenticated()
+            .and()
+            .csrf()
+            .disable();
 //        http.cors().and()
 //        	.headers().frameOptions().sameOrigin()
 //        	.and()
@@ -60,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .sessionRegistry(sessionRegistry());
     }
     
-    @Bean
+  @Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 	    configuration.setAllowedOrigins(Arrays.asList("*"));
@@ -71,5 +76,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	    source.registerCorsConfiguration("/**", configuration);
 	    return source;
 	}
-
 }
+

@@ -11,7 +11,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <maven.compiler.release>17</maven.compiler.release>
+		<!-- <maven.compiler.release>17.0.5</maven.compiler.release> -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
   </properties>
