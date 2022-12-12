@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @SpringBootApplication
@@ -20,7 +22,17 @@ public class Chatea extends SpringBootServletInitializer
     	SpringApplication.run(Chatea.class, args);
    	 	System.out.println("iniciado");
     }
-    
+
+		@Bean
+		public WebMvcConfigurer corsConfigurer() {
+			return new WebMvcConfigurer() {
+				@Override
+				public void addCorsMappings(CorsRegistry registry) {
+					registry.addMapping("/**").allowedOriginPatterns("*");
+				}
+			};
+		}   
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder){
     	return builder.sources(Chatea.class);

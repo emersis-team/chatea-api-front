@@ -22,6 +22,7 @@ ar/mil/cideso/modelo/Location.class
 ar/mil/cideso/controller/PosicionController.class
 ar/mil/cideso/controller/LoginController.class
 ar/mil/cideso/Chatea.class
+ar/mil/cideso/Chatea$1.class
 ar/mil/cideso/controller/ContactosController.class
 ar/mil/cideso/modelo/OutputMessage.class
 ar/mil/cideso/Utils/UtilsHttp.class

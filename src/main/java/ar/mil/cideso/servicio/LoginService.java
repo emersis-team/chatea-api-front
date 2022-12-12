@@ -145,7 +145,10 @@ public class LoginService {
 
 		JSONObject response = request.getJson();
 
-		return response.getJSONObject("user");
+		JSONObject user = response.getJSONObject("user");
+		user.append("token", request.getToken());
+
+		return user;
 	}
 }
 

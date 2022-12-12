@@ -48,8 +48,12 @@ public class UserService {
 		List<Usuario> usuarios = new ArrayList<>();
 
 		for(int i=0;i<apiUsers.length();++i) {
-			JSONObject apiGroups = apiUsers.getJSONObject(i);
-			Usuario u = new Usuario(apiGroups);
+			JSONObject apiUser = apiUsers.getJSONObject(i);
+
+			JSONObject user = new JSONObject();
+			user.put("user", apiUser);
+
+			Usuario u = new Usuario(user);
 
 			usuarios.add(u);
 		}
@@ -70,8 +74,12 @@ public class UserService {
 		List<Usuario> usuarios = new ArrayList<>();
 
 		for(int i=0;i<apiUsers.length();++i) {
-			JSONObject apiGroups = apiUsers.getJSONObject(i);
-			Usuario u = new Usuario(apiGroups);
+			JSONObject apiUser = apiUsers.getJSONObject(i);
+
+			JSONObject user = new JSONObject();
+			user.put("user", apiUser);
+
+			Usuario u = new Usuario(user);
 
 			usuarios.add(u);
 		}

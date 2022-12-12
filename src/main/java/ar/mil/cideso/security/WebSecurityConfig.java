@@ -35,20 +35,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-				http.cors()
-            .and()
-            .requestMatchers()
-            .antMatchers("/*")
-            .and()
-            .logout()
-            .permitAll()
-						.and()
-            .authorizeRequests()
-						.anyRequest()
-            .authenticated()
-            .and()
-            .csrf()
-            .disable();
+			http.cors().and().headers().frameOptions().sameOrigin()
+       .and()
+        .authorizeRequests()
+            .antMatchers("/**").permitAll()
+            .and().csrf().disable();
+
+
 //        http.cors().and()
 //        	.headers().frameOptions().sameOrigin()
 //        	.and()
@@ -68,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.setAllowedOrigins(Arrays.asList("*"));
+	    configuration.setAllowedOrigins(Arrays.asList("https://localhost:8080"));//https://chat-ea-web-proyecto-swart.vercel.app
 	    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
 	    configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
 	    configuration.setAllowCredentials(true);
@@ -77,4 +70,3 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	    return source;
 	}
 }
-
