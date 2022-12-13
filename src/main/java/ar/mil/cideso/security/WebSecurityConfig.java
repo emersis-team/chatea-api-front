@@ -61,7 +61,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.setAllowedOrigins(Arrays.asList("https://localhost:8080"));//https://chat-ea-web-proyecto-swart.vercel.app
+	    configuration.setAllowedOrigins(
+					Arrays.asList(
+						"https://localhost:8080",
+						"https://chat-ea-web-proyecto-gyqi-nlukpxv2s-chateaweb.vercel.app"
+					)
+			);
 	    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
 	    configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
 	    configuration.setAllowCredentials(true);

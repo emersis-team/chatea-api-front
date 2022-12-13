@@ -49,7 +49,7 @@ public class ChatController {
 		@RequestHeader Map<String, String> headers
 	) throws ClientProtocolException, IOException {
 		try {
-			String token = headers.get("Authentication");
+			String token = headers.get("authorization");
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("user_id", entidad.getUser_id().toString()));
@@ -77,7 +77,7 @@ public class ChatController {
 	) throws ClientProtocolException, IOException {
 		try {
 
-			String token = headers.get("Authentication");
+			String token = headers.get("authorization");
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 			builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
