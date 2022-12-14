@@ -1,0 +1,36 @@
+!SESSION 2022-09-23 09:36:50.762 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=17.0.4
+java.vendor=Private Build
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/percebe/cideso/chatea-api-front/
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-09-23 09:36:55.357
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-09-23 09:36:56.014
+!MESSAGE Main thread is waiting
+!SESSION 2022-09-23 09:43:38.223 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=17.0.4
+java.vendor=Private Build
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/percebe/cideso/chatea-api-front/
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-09-23 09:43:41.819
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-09-23 09:43:42.144
+!MESSAGE Main thread is waiting
+!SESSION 2022-09-23 09:49:21.790 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=17.0.4
+java.vendor=Private Build
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/percebe/cideso/chatea-api-front/
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-09-23 09:49:23.433
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-09-23 09:49:23.629
+!MESSAGE Main thread is waiting
