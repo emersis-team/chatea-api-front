@@ -128,7 +128,7 @@ public class UtilsHttp {
 
 			http.close();
 		} catch(ArrayIndexOutOfBoundsException e) {
-			log.error(EntityUtils.toString(response.getEntity()).split("\\{", 2)[0]); 
+			log.error("Array out "+EntityUtils.toString(response.getEntity()).split("\\{", 2)[0]); 
 		} catch(JSONException e) {
 			e.printStackTrace();
 			log.warn("Error parsing response of "+url);

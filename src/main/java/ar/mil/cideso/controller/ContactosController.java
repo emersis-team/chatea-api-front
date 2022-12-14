@@ -41,7 +41,7 @@ public class ContactosController {
 			"{ \"contacts\": %s, \"groups\": %s }",
 			contactFormated, groupFormated
 		);
-
+		System.out.println(credentials);
 		StringEntity params = new StringEntity(credentials);
 
 		userService.createContacts(id, token, params);

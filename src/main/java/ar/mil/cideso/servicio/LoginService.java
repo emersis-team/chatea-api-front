@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -51,7 +50,15 @@ public class LoginService {
 		}
 		Long userId = userResponse.map(u -> u.getJSONObject("user").getLong("id"))
 			.orElseThrow(NotExistException::new);
+		String dni = userResponse.map(u -> u.getJSONObject("user").getString("dni"))
+			.orElseThrow(NotExistException::new);
 		String userName = userResponse.map(u -> u.getJSONObject("user").getString("name"))
+			.orElseThrow(NotExistException::new);
+		String lastname = userResponse.map(u -> u.getJSONObject("user").getString("surname"))
+			.orElseThrow(NotExistException::new);
+		String grade = userResponse.map(u -> u.getJSONObject("user").getString("grade"))
+			.orElseThrow(NotExistException::new);
+		Long organization = userResponse.map(u -> u.getJSONObject("user").getLong("location_id"))
 			.orElseThrow(NotExistException::new);
 
 		UtilsHttp h = new UtilsHttp(userId.toString(), userName);
@@ -62,6 +69,10 @@ public class LoginService {
 		user.setId(userId);
 		user.setEmail(userCredentials.getEmail());
 		user.setName(userName);
+		user.setLastname(lastname);
+		user.setDni(dni);
+		user.setGrade(grade);
+		user.setOrganization(organization.toString());
 
 		user.setIsAdmin(
 				userResponse.map(j -> j.getJSONObject("user"))

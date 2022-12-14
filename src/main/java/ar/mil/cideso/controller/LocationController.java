@@ -67,7 +67,6 @@ public class LocationController {
 	@GetMapping("/locations/{id}")
 	public ResponseEntity<Location> getLocation(
 			@PathVariable(value = "id") Long id,
-			@RequestBody Usuario u,
 		@RequestHeader Map<String, String> headers
 	) throws IOException { 
 		String token = headers.get("authorization");

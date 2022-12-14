@@ -12,6 +12,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
@@ -51,17 +52,21 @@ public class ChatController {
 		try {
 			String token = headers.get("authorization");
 
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("user_id", entidad.getUser_id().toString()));
-			params.add(new BasicNameValuePair("message", entidad.getMessage()));
-			params.add(new BasicNameValuePair("conversation_id", entidad.getConversation_id().toString()));
+
+			String payload = String.format(
+				"{ \"user_id\": \"%s\",  \"message\": \"%s\", \"conversation_id\": \"%s\"  }",
+				 entidad.getUser_id().toString(),
+				 entidad.getMessage(),
+				 entidad.getConversation_id().toString()
+			);
+			StringEntity params = new StringEntity(payload);
 
 			entidad.getConversation_members().forEach(m -> 
 				this.template.convertAndSend("/notificacion/mensaje/" + m.getUser_id(), entidad)
 			);
 			UtilsHttp request = new UtilsHttp();
 			request.setToken(token);
-			request.runPost(url + "/api/textMessage", new UrlEncodedFormEntity(params));
+			request.runPost(url + "/api/textMessage", params);
 
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch(Exception e) {

@@ -27,7 +27,6 @@ public class ConversationsController {
 		
 		UtilsHttp request = new UtilsHttp();
 		try {
-
 			request.setToken(authorization);
 			request.runGet(
 				url + "/api/conversations"
@@ -51,16 +50,17 @@ public class ConversationsController {
 		@PathVariable(value = "idConversacion") Long idConversacion,
 		@RequestParam String page
 	) throws ClientProtocolException, IOException {
-
-		UtilsHttp request = new UtilsHttp(authorization);
+		UtilsHttp request = new UtilsHttp();
+		request.setToken(authorization);
 		try {
 			request.runGet(
-				url + "/api/"+ idUsuario +"/conversations/" + idConversacion + "?page=" + page
+				url + "/api/conversations/" + idConversacion + "?page=" + page
 			);
 			String responseString = request.getString();
 
 			return new ResponseEntity<String>(responseString, HttpStatus.OK);
 		} catch(IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<String>(HttpStatus.valueOf(request.getStatusCode()));
 		} catch(Exception e) {
 			e.printStackTrace();
